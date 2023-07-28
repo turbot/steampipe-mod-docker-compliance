@@ -24,6 +24,10 @@ benchmark "cis_v160_5" {
     control.cis_v160_5_20,
     control.cis_v160_5_21,
     control.cis_v160_5_22,
+    control.cis_v160_5_25,
+    control.cis_v160_5_26,
+    control.cis_v160_5_29,
+    control.cis_v160_5_31,
   ]
 
   tags = merge(local.cis_v160_1_common_tags, {
@@ -278,6 +282,63 @@ not be disabled unless it causes a problem with your container application usage
 
   tags = merge(local.cis_v160_1_common_tags, {
     cis_item_id = "5.22"
+    cis_level   = "5"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_5_25" {
+  title         = "5.25 Ensure that cgroup usage is confirmed"
+  description   = "It is possible to attach to a particular cgroup when a container is instantiated. Confirming cgroup usage would ensure that containers are running in defined cgroups."
+  query         = query.contianer_cgroup_usage
+  documentation = file("./cis_v160/docs/cis_v160_1_1.md")
+
+  tags = merge(local.cis_v160_1_common_tags, {
+    cis_item_id = "5.25"
+    cis_level   = "5"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_5_26" {
+  title         = "5.26 Ensure that the container is restricted from acquiring additional privileges"
+  description   = "We should restrict the container from acquiring additional privileges via suid or sgid
+bits."
+  query         = query.contianer_no_new_privileges
+  documentation = file("./cis_v160/docs/cis_v160_1_1.md")
+
+  tags = merge(local.cis_v160_1_common_tags, {
+    cis_item_id = "5.26"
+    cis_level   = "5"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_5_29" {
+  title         = "5.29 Ensure that the PIDs cgroup limit is used"
+  description   = "We should use the --pids-limit flag at container runtime."
+  query         = query.contianer_pid_cgroup_limit_used
+  documentation = file("./cis_v160/docs/cis_v160_1_1.md")
+
+  tags = merge(local.cis_v160_1_common_tags, {
+    cis_item_id = "5.29"
+    cis_level   = "5"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_5_31" {
+  title         = "5.31 Ensure that the host's user namespaces are not shared"
+  description   = "We should not share the host's user namespaces with containers running on it."
+  query         = query.contianer_host_user_namespace_shared
+  documentation = file("./cis_v160/docs/cis_v160_1_1.md")
+
+  tags = merge(local.cis_v160_1_common_tags, {
+    cis_item_id = "5.31"
     cis_level   = "5"
     cis_type    = "manual"
     service     = "Docker"

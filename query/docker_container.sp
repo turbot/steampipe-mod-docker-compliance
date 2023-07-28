@@ -245,6 +245,74 @@ query "contianer_default_seccomp_profile_disabled" {
   EOQ
 }
 
+query "contianer_cgroup_usage" {
+  sql = <<-EOQ
+    select
+      id as resource,
+      case
+        when inspect -> 'HostConfig' ->> 'CgroupParent' = '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when inspect -> 'HostConfig' ->> 'CgroupParent' = '' then names::text || ' are not running under the default docker cgroup.'
+        else names::text || ' are running under the default docker cgroup.'
+      end as reason
+    from
+      docker_container;
+  EOQ
+}
+
+query "contianer_no_new_privileges" {
+  sql = <<-EOQ
+    select
+      id as resource,
+      case
+        when inspect->'HostConfig'->'SecurityOpt' @> '["no-new-privileges=false"]' then 'alarm'
+        else 'ok'
+      end as status,
+      case
+        when inspect->'HostConfig'->'SecurityOpt' @> '["no-new-privileges=false"]' then names::text || ' new privileges are not restricted.'
+        else names::text || ' new privileges are restricted.'
+      end as reason
+    from
+      docker_container;
+  EOQ
+}
+
+query "contianer_pid_cgroup_limit_used" {
+  sql = <<-EOQ
+    select
+      id as resource,
+      case
+        when inspect -> 'HostConfig' ->> 'PidsLimit' in ('0','-1') then 'alarm'
+        else 'ok'
+      end as status,
+      case
+        when inspect -> 'HostConfig' ->> 'PidsLimit' in ('0','-1') then names::text || ' PIDs cgroup limit is unused.'
+        else names::text || ' PIDs cgroup limit is used.'
+      end as reason
+    from
+      docker_container;
+  EOQ
+}
+
+query "contianer_host_user_namespace_shared" {
+  sql = <<-EOQ
+    select
+      id as resource,
+      case
+        when inspect -> 'HostConfig' ->> 'UsernsMode' = 'host' then 'alarm'
+        else 'ok'
+      end as status,
+      case
+        when inspect -> 'HostConfig' ->> 'UsernsMode' = 'host' then names::text || ' host user namespace is shared.'
+        else names::text || ' host user namespace is not shared.'
+      end as reason
+    from
+      docker_container;
+  EOQ
+}
+
 query "privileged_containers" {
   sql = <<-EOQ
     select
