@@ -5,10 +5,10 @@
 **Includes full support for the CIS v1.6 Docker Benchmarks**.
 
 Run checks in a dashboard:
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/aws_cis_v160_dashboard.png)
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_dashboard.png)
 
 Or in a terminal:
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/aws_cis_v160_console.png)
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_console.png)
 
 Includes support for:
 
