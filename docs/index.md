@@ -1,18 +1,15 @@
-# Docker Compliance Mod for Steampipe
+---
+repository: "https://github.com/turbot/steampipe-mod-docker-compliance"
+---
 
-34+ checks covering industry defined security best practices for Docker. Includes full support for `CIS v1.6.0` compliance benchmarks across all your Docker resources.
+# Docker Compliance Mod
 
-**Includes full support for the CIS v1.6 Docker Benchmarks**.
+## References
 
-Run checks in a dashboard:
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/aws_cis_v160_dashboard.png)
+## Documentation
 
-Or in a terminal:
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/aws_cis_v160_console.png)
-
-Includes support for:
-
-- [Docker CIS v1.6.0](https://hub.steampipe.io/mods/turbot/docker_compliance/controls/benchmark.cis_v160)
+- **[Benchmarks and controls →](https://hub.steampipe.io/mods/turbot/docker_compliance/controls)**
+- **[Named queries →](https://hub.steampipe.io/mods/turbot/docker_compliance/queries)**
 
 ## Getting started
 
