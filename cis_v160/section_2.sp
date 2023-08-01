@@ -8,7 +8,9 @@ benchmark "cis_v160_2" {
   title         = "2 Docker daemon configuration"
   documentation = file("./cis_v160/docs/cis_v160_2.md")
   children = [
+    control.cis_v160_2_1,
     control.cis_v160_2_2,
+    control.cis_v160_2_3,
     control.cis_v160_2_5,
     control.cis_v160_2_6,
     control.cis_v160_2_9,
@@ -22,6 +24,20 @@ benchmark "cis_v160_2" {
   })
 }
 
+control "cis_v160_2_1" {
+  title       = "2.1 Run the Docker daemon as a non-root user, if possible"
+  description = "Rootless mode executes the Docker daemon and containers inside a user namespace, with both the daemon and the container are running without root privileges."
+  query       = query.docker_daemon_run_as_root_user
+  #documentation = file("./cis_v160/docs/cis_v160_2_1.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.1"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
 control "cis_v160_2_2" {
   title         = "2.2 Ensure network traffic is restricted between containers on the default bridge"
   description   = "By default, all network traffic is allowed between containers on the same host on the default network bridge. If not desired, restrict all inter-container communication. Link specific containers together that require communication. Alternatively, you can create custom network and only join containers that need to communicate to that custom network."
@@ -30,6 +46,20 @@ control "cis_v160_2_2" {
 
   tags = merge(local.cis_v160_2_common_tags, {
     cis_item_id = "2.2"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_2_3" {
+  title       = "2.3 Ensure the logging level is set to 'info'"
+  description = "Set Docker daemon log level to info."
+  query       = query.logging_level_set_to_info
+  #documentation = file("./cis_v160/docs/cis_v160_2_3.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.3"
     cis_level   = "2"
     cis_type    = "manual"
     service     = "Docker"
