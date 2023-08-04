@@ -74,7 +74,7 @@ control "cis_v160_1_1_1" {
 }
 
 control "cis_v160_1_1_3" {
-  title       = "1.1.1 Ensure auditing is configured for the Docker daemon"
+  title       = "1.1.3 Ensure auditing is configured for the Docker daemon"
   description = "Audit all Docker daemon activities."
   query       = query.docker_daemon_auditing_configured
   #documentation = file("./cis_v160/docs/cis_v160_1_1_3.md")
