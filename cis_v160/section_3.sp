@@ -173,8 +173,7 @@ control "cis_v160_3_18" {
 
 control "cis_v160_3_19" {
   title       = "3.19 Ensure that the /etc/default/docker file ownership is set to root:root"
-  description = "You should verify that the /etc/default/docker file ownership and group-ownership is
-correctly set to root."
+  description = "You should verify that the /etc/default/docker file ownership and group-ownership is correctly set to root."
   query       = query.etc_default_docker_file_ownership_root_root
   #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
 
