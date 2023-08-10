@@ -810,3 +810,185 @@ query "docker_socket_file_restrictive_permission" {
       file_location as l;
   EOQ
 }
+
+query "etc_docker_directory_restrictive_permission" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %a /etc/docker'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%755%' then 'ok'
+        else 'alarm'
+      end as status,
+        name || ' /etc/docker directory permission set to ' || o.output || '.'  as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "docker_socket_file_ownership_root_docker" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %U:%G /var/run/docker.sock | grep -v root:docker'
+    )
+    select
+      id as resource,
+      case
+        when o.output = '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output = '' then name || ' docker socket file ownership is set to root:docker.'
+        else name || ' docker socket file ownership is not set to root:docker.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "docker_sock_file_restrictive_permission" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %a /var/run/docker.sock'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%660%' then 'ok'
+        else 'alarm'
+      end as status,
+      name || ' docker.socket file permission set to ' || o.output || '.' as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "daemon_json_file_ownership_root_root" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %U:%G /etc/docker/daemon.json | grep -v root:root '
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%No such file or directory%' then 'skip'
+        when o.output = '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        when o.output = '' then name || ' daemon.json file ownership is set to root:root.'
+        else name || ' docker socket file ownership is not set to root:root.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "daemon_json_file_restrictive_permission" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %a /etc/docker/daemon.json'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%No such file or directory%' then 'skip'
+        when o.output like '%644%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        else name || ' daemon.json file permission set to ' || o.output || '.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "etc_default_docker_file_ownership_root_root" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %U:%G /etc/default/docker | grep -v root:root'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%No such file or directory%' then 'skip'
+        when o.output = '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        when o.output = '' then name || ' /etc/default/docker file ownership is set to root:root.'
+        else name || ' /etc/default/docker file ownership is not set to root:root.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "etc_default_docker_file_restrictive_permission" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %a /etc/default/docker'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%No such file or directory%' then 'skip'
+        when o.output like '%644%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        else name || ' /etc/default/docker file permission set to ' || o.output || '.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
