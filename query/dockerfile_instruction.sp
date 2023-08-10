@@ -49,3 +49,5 @@ query "dockerfile_add_instruction" {
       on i.path = u.path;
   EOQ
 }
+
+

@@ -9,6 +9,7 @@ benchmark "cis_v160_4" {
   documentation = file("./cis_v160/docs/cis_v160_4.md")
   children = [
     control.cis_v160_4_1,
+    control.cis_v160_4_5,
     control.cis_v160_4_6,
     control.cis_v160_4_9,
   ]
@@ -27,6 +28,20 @@ control "cis_v160_4_1" {
   tags = merge(local.cis_v160_4_common_tags, {
     cis_item_id = "4.1"
     cis_level   = "4"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_4_5" {
+  title         = "4.5 Ensure Content trust for Docker is Enabled"
+  description   = "Content trust is disabled by default and should be enabled in line with organizational security policy."
+  query         = query.docker_container_trust_enabled
+  # documentation = file("./cis_v160/docs/cis_v160_4_5.md")
+
+  tags = merge(local.cis_v160_4_common_tags, {
+    cis_item_id = "4.5"
+    cis_level   = "2"
     cis_type    = "manual"
     service     = "Docker"
   })
