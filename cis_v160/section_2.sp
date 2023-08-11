@@ -66,6 +66,20 @@ control "cis_v160_2_3" {
   })
 }
 
+control "cis_v160_2_4" {
+  title       = "2.3 Ensure Docker is allowed to make changes to iptables '"
+  description = "The iptables firewall is used to set up, maintain, and inspect the tables of IP packet filter rules within the Linux kernel. The Docker daemon should be allowed to make changes to the iptables ruleset."
+  query       = query.docker_iptables_not_set
+  #documentation = file("./cis_v160/docs/cis_v160_2_3.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.4"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
 control "cis_v160_2_5" {
   title         = "2.5 Ensure insecure registries are not used"
   description   = "Docker considers a private registry either secure or insecure. By default, registries are considered secure."
@@ -122,6 +136,20 @@ control "cis_v160_2_13" {
   })
 }
 
+control "cis_v160_2_14" {
+  title         = "2.14 Ensure containers are restricted from acquiring new privileges"
+  description   = "By default you should restrict containers from acquiring additional privileges via suid or sgid."
+  query         = query.containers_no_new_privilege_disabled
+  # documentation = file("./cis_v160/docs/cis_v160_2_14.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.14"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
 control "cis_v160_2_15" {
   title         = "2.15 Ensure live restore is enabled"
   description   = "The --live-restore option enables full support of daemon-less containers within Docker. It ensures that Docker does not stop containers on shutdown or restore and that it properly reconnects to the container when restarted."
@@ -131,6 +159,20 @@ control "cis_v160_2_15" {
   tags = merge(local.cis_v160_2_common_tags, {
     cis_item_id = "2.15"
     cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_2_16" {
+  title         = "2.16 Ensure Userland Proxy is Disabled"
+  description   = "The Docker daemon starts a userland proxy service for port forwarding whenever a port is exposed. Where hairpin NAT is available, this service is generally superfluous to requirements and can be disabled."
+  query         = query.userland_proxy_disabled
+  # documentation = file("./cis_v160/docs/cis_v160_2_16.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.16"
+    cis_level   = "1"
     cis_type    = "manual"
     service     = "Docker"
   })

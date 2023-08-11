@@ -14,6 +14,7 @@ benchmark "cis_v160_3" {
     control.cis_v160_3_4,
     control.cis_v160_3_5,
     control.cis_v160_3_6,
+    control.cis_v160_3_7,
     control.cis_v160_3_15,
     control.cis_v160_3_16,
     control.cis_v160_3_17,
@@ -111,6 +112,34 @@ control "cis_v160_3_6" {
     cis_item_id = "3.6"
     cis_level   = "1"
     cis_type    = "automated"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_7" {
+  title       = "3.7 Ensure that registry certificate file ownership is set to root:root"
+  description = "You should verify that all the registry certificate files (usually found under /etc/docker/certs.d/<registry-name> directory) are individually owned and group owned by root."
+  query       = query.registry_certificate_ownership_root_root
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.7"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_8" {
+  title       = "3.8 Ensure that registry certificate file permissions are set to 444 or more restrictively"
+  description = "You should verify that all the registry certificate files (usually found under /etc/docker/certs.d/<registry-name> directory) have permissions of 444 or are set more restrictively."
+  query       = query.registry_certificate_file_permissions_444
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.8"
+    cis_level   = "1"
+    cis_type    = "manual"
     service     = "Docker"
   })
 }

@@ -992,3 +992,190 @@ query "etc_default_docker_file_restrictive_permission" {
       command_output as o;
   EOQ
 }
+
+query "docker_exec_command_no_privilege_option" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'sudo ausearch -k docker | grep exec | grep privileged'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%no matches%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%no matches%' then name || ' docker exec commands are not used with the privileged option.'
+        else name || ' docker exec commands are used with the privileged option.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "docker_exec_command_no_user_root_option" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'sudo ausearch -k docker | grep exec | grep user'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%no matches%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%no matches%' then name || ' docker exec commands are not used with the user=root option'
+        else name || ' docker exec commands are used with the user=root option.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "registry_certificate_ownership_root_root" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %U:%G /etc/docker/certs.d/* | grep -v root:root'
+    )
+    select
+      id as resource,
+      case
+        when o.output = '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output = '' then name || ' registry certificate file ownership is set to root:root.'
+        else name || ' registry certificate file ownership is not set to root:root.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "registry_certificate_file_permissions_444" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'find /etc/docker/certs.d/ -type f -exec stat -c "%a %n" {} \;'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%No such file or directory%' then 'skip'
+        when o.output like '%444%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        else name || ' registry certificate file permissions set to ' || o.output || '.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "docker_iptables_not_set" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%--iptables=false%' then 'ok'
+        when o.output not like '%--iptables%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%--iptables=false%' then name || ' iptables is set to false.'
+        when o.output not like '%--iptables%' then name || ' iptables not set.'
+        else name || ' iptables are set to true.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "userland_proxy_disabled" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%--userland-proxy=false%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output like '%--userland-proxy=false%' then name || ' userland proxy is Disabled.'
+        else name || ' userland proxy is enabled.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}
+
+query "containers_no_new_privilege_disabled" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
+    )
+    select
+      id as resource,
+      case
+        when o.output like '%--no-new-privileges=false%' then 'alarm'
+        when o.output not like '%--no-new-privileges%' then 'alarm'
+        else 'ok'
+      end as status,
+      case
+        when o.output like '%--no-new-privileges=false%' then name || ' no new privileges is disabled.'
+        when o.output not like '%--no-new-privileges%' then name || ' no new privileges not set.'
+        else name || ' no new privilege is enabled.'
+      end as reason
+    from
+      docker_info,
+      command_output as o;
+  EOQ
+}

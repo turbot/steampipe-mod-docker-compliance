@@ -24,6 +24,8 @@ benchmark "cis_v160_5" {
     control.cis_v160_5_20,
     control.cis_v160_5_21,
     control.cis_v160_5_22,
+    control.cis_v160_5_23,
+    control.cis_v160_5_24,
     control.cis_v160_5_25,
     control.cis_v160_5_26,
     control.cis_v160_5_29,
@@ -258,6 +260,35 @@ control "cis_v160_5_22" {
     service     = "Docker"
   })
 }
+
+control "cis_v160_5_23" {
+  title         = "5.23 Ensure that docker exec commands are not used with the privileged option"
+  description   = "You should not use docker exec with the --privileged option."
+  query         = query.docker_exec_command_no_privilege_option
+  # documentation = file("./cis_v160/docs/cis_v160_5_23.md")
+
+  tags = merge(local.cis_v160_5_common_tags, {
+    cis_item_id = "5.23"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_5_24" {
+  title         = "5.24 Ensure that docker exec commands are not used with the user=root option"
+  description   = "You should not use docker exec with the --user=root option."
+  query         = query.docker_exec_command_no_user_root_option
+  # documentation = file("./cis_v160/docs/cis_v160_5_23.md")
+
+  tags = merge(local.cis_v160_5_common_tags, {
+    cis_item_id = "5.24"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
 
 control "cis_v160_5_25" {
   title         = "5.25 Ensure that cgroup usage is confirmed"
