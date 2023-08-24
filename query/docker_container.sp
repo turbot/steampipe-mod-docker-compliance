@@ -7,8 +7,8 @@ query "container_healthcheck_instruction" {
         else 'ok'
       end as status,
       case
-        when config -> 'Healthcheck' is null then names::text || ' do not have a health check configured.'
-        else names::text || ' have a health check configured.'
+        when config -> 'Healthcheck' is null then (names ->> 0) || ' do not have a health check configured.'
+        else (names ->> 0) || ' have a health check configured.'
       end as reason
     from
       docker_container;
@@ -24,8 +24,8 @@ query "container_apparmor_profile_enabled" {
         else 'ok'
       end as status,
       case
-        when inspect ->> 'AppArmorProfile' = '' then names::text || ' do not have a AppArmor profile configured.'
-        else names::text || ' have a AppArmor profile configured.'
+        when inspect ->> 'AppArmorProfile' = '' then (names ->> 0) || ' do not have a AppArmor profile configured.'
+        else (names ->> 0) || ' have a AppArmor profile configured.'
       end as reason
     from
       docker_container;
@@ -41,8 +41,8 @@ query "contianer_host_network_namespace_shared" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'NetworkMode' = 'host' then names::text || ' host network namespace is shared.'
-        else names::text || ' host network namespace is not shared.'
+        when inspect -> 'HostConfig' ->> 'NetworkMode' = 'host' then (names ->> 0) || ' host network namespace is shared.'
+        else (names ->> 0) || ' host network namespace is not shared.'
       end as reason
     from
       docker_container;
@@ -58,8 +58,8 @@ query "contianer_memory_usage_limit" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'Memory' = '0' then names::text || ' memory usage is not limited.'
-        else names::text || ' memory usage is limited.'
+        when inspect -> 'HostConfig' ->> 'Memory' = '0' then (names ->> 0) || ' memory usage is not limited.'
+        else (names ->> 0) || ' memory usage is limited.'
       end as reason
     from
       docker_container;
@@ -75,8 +75,8 @@ query "contianer_cpu_priority_set" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'CpuShares' in ('0','1024') then names::text || ' CPU priority is not set appropriately.'
-        else names::text || ' CPU priority is set appropriately.'
+        when inspect -> 'HostConfig' ->> 'CpuShares' in ('0','1024') then (names ->> 0) || ' CPU priority is not set appropriately.'
+        else (names ->> 0) || ' CPU priority is set appropriately.'
       end as reason
     from
       docker_container;
@@ -92,8 +92,8 @@ query "contianer_root_filesystem_mounted" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'ReadonlyRootfs' = 'false' then names::text || ' root filesystem is not mounted as read only.'
-        else names::text || ' root filesystem is mounted as read only.'
+        when inspect -> 'HostConfig' ->> 'ReadonlyRootfs' = 'false' then (names ->> 0) || ' root filesystem is not mounted as read only.'
+        else (names ->> 0) || ' root filesystem is mounted as read only.'
       end as reason
     from
       docker_container;
@@ -110,8 +110,8 @@ query "contianer_restart_policy_on_failure" {
         else 'alarm'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'ReadonlyRootfs' = 'false' then names::text || ' RestartPolicy is set to on-failure with MaximumRetryCount 5.'
-        else names::text || ' RestartPolicy is not set to on-failure with MaximumRetryCount 5.'
+        when inspect -> 'HostConfig' ->> 'ReadonlyRootfs' = 'false' then (names ->> 0) || ' RestartPolicy is set to on-failure with MaximumRetryCount 5.'
+        else (names ->> 0) || ' RestartPolicy is not set to on-failure with MaximumRetryCount 5.'
       end as reason
     from
       docker_container;
@@ -127,8 +127,8 @@ query "contianer_host_process_namespace_shared" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'PidMode' = 'host' then names::text || ' host PID namespace is shared.'
-        else names::text || ' host PID namespace is not shared.'
+        when inspect -> 'HostConfig' ->> 'PidMode' = 'host' then (names ->> 0) || ' host PID namespace is shared.'
+        else (names ->> 0) || ' host PID namespace is not shared.'
       end as reason
     from
       docker_container;
@@ -144,8 +144,8 @@ query "contianer_host_ipc_namespace_shared" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'IpcMode' = 'host' then names::text || ' host IPC namespace is shared.'
-        else names::text || ' host IPC namespace is not shared.'
+        when inspect -> 'HostConfig' ->> 'IpcMode' = 'host' then (names ->> 0) || ' host IPC namespace is shared.'
+        else (names ->> 0) || ' host IPC namespace is not shared.'
       end as reason
     from
       docker_container;
@@ -163,8 +163,8 @@ query "host_devices_exposed_to_containers" {
       end as status,
       case
         when inspect -> 'HostConfig' -> 'Devices' = '[]'
-        or inspect -> 'HostConfig' ->> 'Devices' is null then names::text || ' host devices not exposed.'
-        else names::text || ' host devices exposed.'
+        or inspect -> 'HostConfig' ->> 'Devices' is null then (names ->> 0) || ' host devices not exposed.'
+        else (names ->> 0) || ' host devices exposed.'
       end as reason
     from
       docker_container;
@@ -180,8 +180,8 @@ query "container_default_ulimit" {
         else 'alarm'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'Ulimits' is null then names::text || ' default ulimit is not overwritten.'
-        else names::text || ' default ulimit is overwritten.'
+        when inspect -> 'HostConfig' ->> 'Ulimits' is null then (names ->> 0) || ' default ulimit is not overwritten.'
+        else (names ->> 0) || ' default ulimit is overwritten.'
       end as reason
     from
       docker_container;
@@ -197,8 +197,8 @@ query "container_mount_propagation_mode_shared" {
         else 'alarm'
       end as status,
       case
-        when m.id is null then names::text || ' mount propagation mode is not shared.'
-        else names::text || ' mount propagation mode is shared.'
+        when m.id is null then (names ->> 0) || ' mount propagation mode is not shared.'
+        else (names ->> 0) || ' mount propagation mode is shared.'
       end as reason
     from
       docker_container as c
@@ -220,8 +220,8 @@ query "contianer_host_uts_namespace_shared" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'UTSMode' = 'host' then names::text || ' host UTS namespace is shared.'
-        else names::text || ' host UTS namespace is not shared.'
+        when inspect -> 'HostConfig' ->> 'UTSMode' = 'host' then (names ->> 0) || ' host UTS namespace is shared.'
+        else (names ->> 0) || ' host UTS namespace is not shared.'
       end as reason
     from
       docker_container;
@@ -237,8 +237,8 @@ query "contianer_default_seccomp_profile_disabled" {
         else 'ok'
       end as status,
       case
-        when inspect->'HostConfig'->'SecurityOpt' @> '["seccomp=unconfined"]' then names::text || ' default seccomp profile is disabled.'
-        else names::text || ' default seccomp profile is not disabled.'
+        when inspect->'HostConfig'->'SecurityOpt' @> '["seccomp=unconfined"]' then (names ->> 0) || ' default seccomp profile is disabled.'
+        else (names ->> 0) || ' default seccomp profile is not disabled.'
       end as reason
     from
       docker_container;
@@ -254,8 +254,8 @@ query "contianer_cgroup_usage" {
         else 'alarm'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'CgroupParent' = '' then names::text || ' are not running under the default docker cgroup.'
-        else names::text || ' are running under the default docker cgroup.'
+        when inspect -> 'HostConfig' ->> 'CgroupParent' = '' then (names ->> 0) || ' are not running under the default docker cgroup.'
+        else (names ->> 0) || ' are running under the default docker cgroup.'
       end as reason
     from
       docker_container;
@@ -271,8 +271,8 @@ query "contianer_no_new_privileges" {
         else 'ok'
       end as status,
       case
-        when inspect->'HostConfig'->'SecurityOpt' @> '["no-new-privileges=false"]' then names::text || ' new privileges are not restricted.'
-        else names::text || ' new privileges are restricted.'
+        when inspect->'HostConfig'->'SecurityOpt' @> '["no-new-privileges=false"]' then (names ->> 0) || ' new privileges are not restricted.'
+        else (names ->> 0) || ' new privileges are restricted.'
       end as reason
     from
       docker_container;
@@ -288,8 +288,8 @@ query "contianer_pid_cgroup_limit_used" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'PidsLimit' in ('0','-1') then names::text || ' PIDs cgroup limit is unused.'
-        else names::text || ' PIDs cgroup limit is used.'
+        when inspect -> 'HostConfig' ->> 'PidsLimit' in ('0','-1') then (names ->> 0) || ' PIDs cgroup limit is unused.'
+        else (names ->> 0) || ' PIDs cgroup limit is used.'
       end as reason
     from
       docker_container;
@@ -305,8 +305,8 @@ query "contianer_host_user_namespace_shared" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'UsernsMode' = 'host' then names::text || ' host user namespace is shared.'
-        else names::text || ' host user namespace is not shared.'
+        when inspect -> 'HostConfig' ->> 'UsernsMode' = 'host' then (names ->> 0) || ' host user namespace is shared.'
+        else (names ->> 0) || ' host user namespace is not shared.'
       end as reason
     from
       docker_container;
@@ -322,8 +322,8 @@ query "privileged_containers" {
         else 'ok'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'Privileged' = 'true' then names::text || ' is running as a privileged container.'
-        else names::text || ' is not running as a privileged container.'
+        when inspect -> 'HostConfig' ->> 'Privileged' = 'true' then (names ->> 0) || ' is running as a privileged container.'
+        else (names ->> 0) || ' is not running as a privileged container.'
       end as reason
     from
       docker_container;
@@ -339,8 +339,8 @@ query "host_system_directories_mounted_on_containers" {
         else 'alarm'
       end as status,
       case
-        when m.id is null then names::text || ' host system directories are not mounted.'
-        else names::text || ' host system directories are mounted.'
+        when m.id is null then (names ->> 0) || ' host system directories are not mounted.'
+        else (names ->> 0) || ' host system directories are mounted.'
       end as reason
     from
       docker_container as c
