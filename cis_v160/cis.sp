@@ -10,6 +10,7 @@ benchmark "cis_v160" {
   description   = "The CIS Docker Benchmark provides prescriptive guidance for establishing a secure configuration posture for Docker Engine v20.10. This guide was tested against Docker Engine 20.10.20 on RHEL 7 and Ubuntu 20.04."
   documentation = file("./cis_v160/docs/cis_v160_overview.md")
   children = [
+    benchmark.cis_v160_1,
     benchmark.cis_v160_2,
     benchmark.cis_v160_4,
     benchmark.cis_v160_5,
