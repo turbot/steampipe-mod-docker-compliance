@@ -695,10 +695,14 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
     select
       id as resource,
       case
+        when o.output like '%No such file or directory%' then 'skip'
         when o.output like '%644%' then 'ok'
         else 'alarm'
       end as status,
-      name || ' containerd socket file permission set to ' || o.output || '.' as reason
+      name || case
+        when o.output like '%No such file or directory%' then ' no such file configured'
+        else ' containerd socket file permission set to ' || o.output || '.'
+      end as reason
     from
       docker_info,
       command_output as o;
