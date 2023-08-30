@@ -32,7 +32,7 @@ query "container_apparmor_profile_enabled" {
   EOQ
 }
 
-query "contianer_host_network_namespace_shared" {
+query "container_host_network_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -49,7 +49,7 @@ query "contianer_host_network_namespace_shared" {
   EOQ
 }
 
-query "contianer_memory_usage_limit" {
+query "container_memory_usage_limit" {
   sql = <<-EOQ
     select
       id as resource,
@@ -66,7 +66,7 @@ query "contianer_memory_usage_limit" {
   EOQ
 }
 
-query "contianer_cpu_priority_set" {
+query "container_cpu_priority_set" {
   sql = <<-EOQ
     select
       id as resource,
@@ -83,7 +83,7 @@ query "contianer_cpu_priority_set" {
   EOQ
 }
 
-query "contianer_root_filesystem_mounted" {
+query "container_root_filesystem_mounted" {
   sql = <<-EOQ
     select
       id as resource,
@@ -100,7 +100,7 @@ query "contianer_root_filesystem_mounted" {
   EOQ
 }
 
-query "contianer_restart_policy_on_failure" {
+query "container_restart_policy_on_failure" {
   sql = <<-EOQ
     select
       id as resource,
@@ -118,7 +118,7 @@ query "contianer_restart_policy_on_failure" {
   EOQ
 }
 
-query "contianer_host_process_namespace_shared" {
+query "container_host_process_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -135,7 +135,7 @@ query "contianer_host_process_namespace_shared" {
   EOQ
 }
 
-query "contianer_host_ipc_namespace_shared" {
+query "container_host_ipc_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -211,7 +211,7 @@ query "container_mount_propagation_mode_shared" {
   EOQ
 }
 
-query "contianer_host_uts_namespace_shared" {
+query "container_host_uts_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -228,7 +228,7 @@ query "contianer_host_uts_namespace_shared" {
   EOQ
 }
 
-query "contianer_default_seccomp_profile_disabled" {
+query "container_default_seccomp_profile_disabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -245,7 +245,7 @@ query "contianer_default_seccomp_profile_disabled" {
   EOQ
 }
 
-query "contianer_cgroup_usage" {
+query "container_cgroup_usage" {
   sql = <<-EOQ
     select
       id as resource,
@@ -262,7 +262,7 @@ query "contianer_cgroup_usage" {
   EOQ
 }
 
-query "contianer_no_new_privileges" {
+query "container_no_new_privileges" {
   sql = <<-EOQ
     select
       id as resource,
@@ -279,7 +279,7 @@ query "contianer_no_new_privileges" {
   EOQ
 }
 
-query "contianer_pid_cgroup_limit_used" {
+query "container_pid_cgroup_limit_used" {
   sql = <<-EOQ
     select
       id as resource,
@@ -296,7 +296,7 @@ query "contianer_pid_cgroup_limit_used" {
   EOQ
 }
 
-query "contianer_host_user_namespace_shared" {
+query "container_host_user_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
