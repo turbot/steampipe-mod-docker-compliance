@@ -51,13 +51,14 @@ query "docker_daemon_run_as_root_user" {
 query "logging_level_set_to_info" {
   sql = <<-EOQ
     with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -fe | grep ''dockerd'''
+    )
     select
-      output
-    from
-      exec_command
-    where
-      command = 'ps -fe | grep ''dockerd'''
-    )select
       id as resource,
       case
         when output like '%--log-level=info%'
@@ -78,13 +79,14 @@ query "logging_level_set_to_info" {
 query "docker_daemon_auditing_configured" {
   sql = <<-EOQ
     with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'sudo auditctl -l | grep /usr/bin/dockerd'
+    )
     select
-      output
-    from
-      exec_command
-    where
-      command = 'sudo auditctl -l | grep /usr/bin/dockerd'
-    )select
       id as resource,
       case
         when output = '' then 'alarm'
@@ -103,20 +105,21 @@ query "docker_daemon_auditing_configured" {
 query "docker_socket_file_ownership_set_to_root" {
   sql = <<-EOQ
     with command_output as (
-    select
-      output
-    from
-      exec_command
-    where
-      command = 'stat -c %U:%G "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')" | grep -v root:root'
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %U:%G "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')" | grep -v root:root'
     ),file_location as (
+        select
+          output
+        from
+          exec_command
+        where
+          command = 'systemctl show -p FragmentPath docker.socket'
+    )
     select
-      output
-    from
-      exec_command
-    where
-      command = 'systemctl show -p FragmentPath docker.socket'
-    )select
       id as resource,
       case
         when l.output = '' then 'skip'
@@ -138,13 +141,14 @@ query "docker_socket_file_ownership_set_to_root" {
 query "etc_docker_directory_ownership_set_to_root" {
   sql = <<-EOQ
     with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'stat -c %U:%G "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')" | grep -v root:root'
+    )
     select
-      output
-    from
-      exec_command
-    where
-      command = 'stat -c %U:%G "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')" | grep -v root:root'
-    )select
       id as resource,
       case
         when o.output = '' then 'ok'
@@ -620,10 +624,14 @@ query "docker_containerd_socket_file_restrictive_permission" {
     select
       id as resource,
       case
+        when o.output like '%No such file or directory%' then 'skip'
         when o.output like '%660%' or o.output like '%600%' then 'ok'
         else 'alarm'
       end as status,
-      name || ' containerd socket file permission set to ' || o.output || '.' as reason
+      name || case
+        when o.output like '%No such file or directory%' then ' recommendation is not applicable as the file is unavailable.'
+        else ' containerd socket file permission set to ' || o.output || '.'
+        end as reason
     from
       docker_info,
       command_output as o;
@@ -700,7 +708,7 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
         else 'alarm'
       end as status,
       name || case
-        when o.output like '%No such file or directory%' then ' no such file configured'
+        when o.output like '%No such file or directory%' then ' recommendation is not applicable as the file is unavailable.'
         else ' containerd socket file permission set to ' || o.output || '.'
       end as reason
     from
@@ -828,10 +836,14 @@ query "etc_docker_directory_restrictive_permission" {
     select
       id as resource,
       case
+        when o.output like '%No such file or directory%' then 'skip'
         when o.output like '%755%' then 'ok'
         else 'alarm'
       end as status,
-        name || ' /etc/docker directory permission set to ' || o.output || '.'  as reason
+      name || case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        else ' /etc/docker directory permission set to ' || o.output || '.'
+        end as reason
     from
       docker_info,
       command_output as o;
@@ -877,10 +889,14 @@ query "docker_sock_file_restrictive_permission" {
     select
       id as resource,
       case
+        when o.output like '%No such file or directory%' then 'skip'
         when o.output like '%660%' then 'ok'
         else 'alarm'
       end as status,
-      name || ' docker.socket file permission set to ' || o.output || '.' as reason
+      name || case
+        when o.output like '%No such file or directory%' then name || ' recommendation is not applicable as the file is unavailable.'
+        else ' docker.socket file permission set to ' || o.output || '.'
+      end as reason
     from
       docker_info,
       command_output as o;
@@ -895,7 +911,7 @@ query "daemon_json_file_ownership_root_root" {
       from
         exec_command
       where
-        command = 'stat -c %U:%G /etc/docker/daemon.json | grep -v root:root '
+        command = 'stat -c %U:%G /etc/docker/daemon.json | grep -v root:root'
     )
     select
       id as resource,
