@@ -117,7 +117,7 @@ query "docker_socket_file_ownership_set_to_root" {
         from
           exec_command
         where
-          command = 'systemctl show -p FragmentPath docker.socket'
+          command = 'echo $(systemctl show -p FragmentPath docker.socket)'
     )
     select
       id as resource,
@@ -329,7 +329,7 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
         from
           exec_command
         where
-          command = 'systemctl show -p FragmentPath docker.socket'
+          command = 'echo $(systemctl show -p FragmentPath docker.socket)'
     )
     select
       id as resource,
@@ -803,7 +803,7 @@ query "docker_socket_file_restrictive_permission" {
         from
           exec_command
         where
-          command = 'systemctl show -p FragmentPath docker.socket'
+          command = 'echo $(systemctl show -p FragmentPath docker.socket)'
     )
     select
       id as resource,
