@@ -10,8 +10,7 @@ benchmark "cis_v160_4" {
   children = [
     control.cis_v160_4_1,
     control.cis_v160_4_5,
-    control.cis_v160_4_6,
-    control.cis_v160_4_9,
+    control.cis_v160_4_6
   ]
 
   tags = merge(local.cis_v160_4_common_tags, {
@@ -55,20 +54,6 @@ control "cis_v160_4_6" {
 
   tags = merge(local.cis_v160_4_common_tags, {
     cis_item_id = "4.6"
-    cis_level   = "4"
-    cis_type    = "manual"
-    service     = "Docker"
-  })
-}
-
-control "cis_v160_4_9" {
-  title         = "4.9 Ensure that COPY is used instead of ADD in Dockerfiles"
-  description   = "We should use the COPY instruction instead of the ADD instruction in the Dockerfile."
-  query         = query.dockerfile_add_instruction
-  documentation = file("./cis_v160/docs/cis_v160_4_9.md")
-
-  tags = merge(local.cis_v160_4_common_tags, {
-    cis_item_id = "4.9"
     cis_level   = "4"
     cis_type    = "manual"
     service     = "Docker"
