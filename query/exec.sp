@@ -768,7 +768,7 @@ query "docker_service_file_restrictive_permission" {
         from
           exec_command
         where
-          command = 'systemctl show -p FragmentPath docker.service'
+          command = 'echo $(systemctl show -p FragmentPath docker.service)'
     )
     select
       id as resource,
