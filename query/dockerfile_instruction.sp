@@ -1,26 +1,26 @@
 query "container_non_root_user" {
   sql = <<-EOQ
-    with dockerfile_user as (
+    with command_output as (
       select
-        distinct path
+        output
       from
-        dockerfile_instruction
+        exec_command
       where
-        instruction = 'user'
-    )select
-      distinct i.path as resource,
+        command = 'docker ps --quiet | xargs -I{} docker exec {} cat /proc/1/status | grep ''^Uid:'' | awk ''{print $3}'''
+    )
+    select
+      id as resource,
       case
-        when u.path is null then 'alarm'
+        when o.output like '%0%' then 'alarm'
         else 'ok'
       end as status,
-      case
-        when u.path is null then 'Dockerfile does not contains the user information.'
-        else 'Dockerfile contains the user information.'
+      name || case
+        when o.output like '%0%' then ' container process is running as root user.'
+        else 'Container process is not running as root user.'
       end as reason
     from
-      dockerfile_instruction as i
-      left join dockerfile_user as u
-      on i.path = u.path;
+      docker_info,
+      command_output as o;
   EOQ
 }
 
