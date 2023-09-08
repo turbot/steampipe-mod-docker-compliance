@@ -4,14 +4,18 @@ locals {
   })
 }
 
+locals {
+  cis_v160_7_controls = flatten([
+    contains(var.plugin, "docker") ? [control.cis_v160_7_1, control.cis_v160_7_5, control.cis_v160_7_7] : [],
+    contains(var.plugin, "exec") ? [] : [],
+  ])
+}
+
 benchmark "cis_v160_7" {
   title         = "7 Docker Swarm Configuration"
   documentation = file("./cis_v160/docs/cis_v160_7.md")
-  children = [
-    control.cis_v160_7_1,
-    control.cis_v160_7_5,
-    control.cis_v160_7_7,
-  ]
+
+  children = local.cis_v160_7_controls
 
   tags = merge(local.cis_v160_7_common_tags, {
     type = "Benchmark"

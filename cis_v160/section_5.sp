@@ -4,33 +4,33 @@ locals {
   })
 }
 
+locals {
+  cis_v160_5_docker_controls = [
+    control.cis_v160_5_1, control.cis_v160_5_2, control.cis_v160_5_5, control.cis_v160_5_6,
+    control.cis_v160_5_10, control.cis_v160_5_11, control.cis_v160_5_12, control.cis_v160_5_13,
+    control.cis_v160_5_15, control.cis_v160_5_16, control.cis_v160_5_17, control.cis_v160_5_18,
+    control.cis_v160_5_19, control.cis_v160_5_20, control.cis_v160_5_21, control.cis_v160_5_22,
+    control.cis_v160_5_25, control.cis_v160_5_26, control.cis_v160_5_29, control.cis_v160_5_31
+  ]
+
+  cis_v160_5_exec_controls = [
+    control.cis_v160_5_23, control.cis_v160_5_24
+  ]
+}
+
+locals {
+
+  cis_v160_5_controls = concat(
+    contains(var.plugin, "docker") ? local.cis_v160_5_docker_controls : [],
+    contains(var.plugin, "exec") ? local.cis_v160_5_exec_controls : [],
+  )
+}
+
 benchmark "cis_v160_5" {
   title         = "5 Container Runtime Configuration"
   documentation = file("./cis_v160/docs/cis_v160_5.md")
-  children = [
-    control.cis_v160_5_1,
-    control.cis_v160_5_2,
-    control.cis_v160_5_5,
-    control.cis_v160_5_6,
-    control.cis_v160_5_10,
-    control.cis_v160_5_11,
-    control.cis_v160_5_12,
-    control.cis_v160_5_13,
-    control.cis_v160_5_15,
-    control.cis_v160_5_16,
-    control.cis_v160_5_17,
-    control.cis_v160_5_18,
-    control.cis_v160_5_19,
-    control.cis_v160_5_20,
-    control.cis_v160_5_21,
-    control.cis_v160_5_22,
-    control.cis_v160_5_23,
-    control.cis_v160_5_24,
-    control.cis_v160_5_25,
-    control.cis_v160_5_26,
-    control.cis_v160_5_29,
-    control.cis_v160_5_31,
-  ]
+
+  children = local.cis_v160_5_controls
 
   tags = merge(local.cis_v160_5_common_tags, {
     type = "Benchmark"
@@ -262,9 +262,9 @@ control "cis_v160_5_22" {
 }
 
 control "cis_v160_5_23" {
-  title         = "5.23 Ensure that docker exec commands are not used with the privileged option"
-  description   = "You should not use docker exec with the --privileged option."
-  query         = query.docker_exec_command_no_privilege_option
+  title       = "5.23 Ensure that docker exec commands are not used with the privileged option"
+  description = "You should not use docker exec with the --privileged option."
+  query       = query.docker_exec_command_no_privilege_option
   # documentation = file("./cis_v160/docs/cis_v160_5_23.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
@@ -276,9 +276,9 @@ control "cis_v160_5_23" {
 }
 
 control "cis_v160_5_24" {
-  title         = "5.24 Ensure that docker exec commands are not used with the user=root option"
-  description   = "You should not use docker exec with the --user=root option."
-  query         = query.docker_exec_command_no_user_root_option
+  title       = "5.24 Ensure that docker exec commands are not used with the user=root option"
+  description = "You should not use docker exec with the --user=root option."
+  query       = query.docker_exec_command_no_user_root_option
   # documentation = file("./cis_v160/docs/cis_v160_5_23.md")
 
   tags = merge(local.cis_v160_5_common_tags, {

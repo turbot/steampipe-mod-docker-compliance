@@ -4,14 +4,18 @@ locals {
   })
 }
 
+locals {
+  cis_v160_4_controls = flatten([
+    contains(var.plugin, "docker") ? [control.cis_v160_4_6] : [],
+    contains(var.plugin, "exec") ? [control.cis_v160_4_1, control.cis_v160_4_5] : [],
+  ])
+}
+
 benchmark "cis_v160_4" {
   title         = "4 Container Images and Build File Configuration"
   documentation = file("./cis_v160/docs/cis_v160_4.md")
-  children = [
-    control.cis_v160_4_1,
-    control.cis_v160_4_5,
-    control.cis_v160_4_6
-  ]
+
+  children = local.cis_v160_4_controls
 
   tags = merge(local.cis_v160_4_common_tags, {
     type = "Benchmark"

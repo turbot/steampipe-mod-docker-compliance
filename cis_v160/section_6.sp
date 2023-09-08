@@ -4,12 +4,18 @@ locals {
   })
 }
 
+locals {
+  cis_v160_6_controls = flatten([
+    contains(var.plugin, "docker") ? [control.cis_v160_6_2] : [],
+    contains(var.plugin, "exec") ? [] : [],
+  ])
+}
+
 benchmark "cis_v160_6" {
   title         = "6 Docker Security Operations"
   documentation = file("./cis_v160/docs/cis_v160_6.md")
-  children = [
-    control.cis_v160_6_2,
-  ]
+
+  children = local.cis_v160_6_controls
 
   tags = merge(local.cis_v160_6_common_tags, {
     type = "Benchmark"

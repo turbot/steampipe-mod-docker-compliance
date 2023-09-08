@@ -7,6 +7,12 @@ locals {
   }
 }
 
+variable "plugin" {
+  type        = list(string)
+  description = "TO-DO"
+  default = ["docker", "exec"]
+}
+
 mod "docker_compliance" {
   # hub metadata
   title         = "Docker Compliance"

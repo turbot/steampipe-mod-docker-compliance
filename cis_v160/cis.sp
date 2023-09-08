@@ -12,6 +12,7 @@ benchmark "cis_v160" {
   children = [
     benchmark.cis_v160_1,
     benchmark.cis_v160_2,
+    benchmark.cis_v160_3,
     benchmark.cis_v160_4,
     benchmark.cis_v160_5,
     benchmark.cis_v160_6,

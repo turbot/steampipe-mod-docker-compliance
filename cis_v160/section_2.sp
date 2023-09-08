@@ -4,21 +4,28 @@ locals {
   })
 }
 
+locals {
+  ccis_v160_2_docker_controls = [control.cis_v160_2_2, control.cis_v160_2_5, control.cis_v160_2_6, control.cis_v160_2_9, control.cis_v160_2_13, control.cis_v160_2_15, control.cis_v160_2_17 ]
+
+  cis_v160_2_exec_controls = [
+    control.cis_v160_2_1, control.cis_v160_2_3, control.cis_v160_2_4, control.cis_v160_2_14, control.cis_v160_2_16
+  ]
+}
+
+locals {
+
+  cis_v160_2_controls = concat(
+    contains(var.plugin, "docker") ? local.ccis_v160_2_docker_controls : [],
+    contains(var.plugin, "exec") ? local.cis_v160_2_exec_controls : [],
+  )
+}
+
 benchmark "cis_v160_2" {
   title         = "2 Docker daemon configuration"
   documentation = file("./cis_v160/docs/cis_v160_2.md")
-  children = [
-    control.cis_v160_2_1,
-    control.cis_v160_2_2,
-    control.cis_v160_2_3,
-    control.cis_v160_2_5,
-    control.cis_v160_2_6,
-    control.cis_v160_2_9,
-    control.cis_v160_2_13,
-    control.cis_v160_2_15,
-    control.cis_v160_2_17
-  ]
 
+  children = local.cis_v160_2_controls
+  
   tags = merge(local.cis_v160_2_common_tags, {
     type = "Benchmark"
   })
