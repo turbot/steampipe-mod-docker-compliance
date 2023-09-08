@@ -6,8 +6,8 @@ locals {
 
 locals {
   cis_v160_6_controls = flatten([
-    contains(var.plugin, "docker") ? [control.cis_v160_6_2] : [],
-    contains(var.plugin, "exec") ? [] : [],
+    contains(var.control_types, "docker") ? [control.cis_v160_6_2] : [],
+    contains(var.control_types, "exec") ? [] : [],
   ])
 }
 

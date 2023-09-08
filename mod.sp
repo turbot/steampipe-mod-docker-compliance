@@ -7,7 +7,7 @@ locals {
   }
 }
 
-variable "plugin" {
+variable "control_types" {
   type        = list(string)
   description = "TO-DO"
   default = ["docker", "exec"]

@@ -15,8 +15,8 @@ locals {
 locals {
 
   cis_v160_2_controls = concat(
-    contains(var.plugin, "docker") ? local.ccis_v160_2_docker_controls : [],
-    contains(var.plugin, "exec") ? local.cis_v160_2_exec_controls : [],
+    contains(var.control_types, "docker") ? local.ccis_v160_2_docker_controls : [],
+    contains(var.control_types, "exec") ? local.cis_v160_2_exec_controls : [],
   )
 }
 
@@ -25,7 +25,7 @@ benchmark "cis_v160_2" {
   documentation = file("./cis_v160/docs/cis_v160_2.md")
 
   children = local.cis_v160_2_controls
-  
+
   tags = merge(local.cis_v160_2_common_tags, {
     type = "Benchmark"
   })
