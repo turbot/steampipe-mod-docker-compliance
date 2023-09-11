@@ -1286,11 +1286,11 @@ query "docker_exec_command_no_privilege_option" {
     select
       h.output as resource,
       case
-        when o.output like '%no matches%' then 'ok'
+        when o.output like '' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output like '%no matches%' then h.output || ' docker exec commands are not used with the privileged option.'
+        when o.output like '' then h.output || ' docker exec commands are not used with the privileged option.'
         else h.output || ' docker exec commands are used with the privileged option.'
       end as reason
     from
@@ -1319,11 +1319,11 @@ query "docker_exec_command_no_user_root_option" {
     select
       h.output as resource,
       case
-        when o.output like '%no matches%' then 'ok'
+        when o.output like '' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output like '%no matches%' then h.output || ' docker exec commands are not used with the user=root option'
+        when o.output like '' then h.output || ' docker exec commands are not used with the user=root option'
         else h.output || ' docker exec commands are used with the user=root option.'
       end as reason
     from
