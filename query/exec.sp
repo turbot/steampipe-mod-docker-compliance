@@ -17,7 +17,7 @@ query "separate_partition_for_containers_created" {
     ), command_output as (
       select
         case
-          when os_output.output ilike '%Darwin%' then 'not linux'
+          when os_output.output ilike '%Darwin%' then (select output from exec_command where command = E'df | grep "$(docker info -f \'{{ .DockerRootDir }}\')"')
           else (select output from exec_command where command = E'mountpoint -- "$(docker info -f \'{{ .DockerRootDir }}\')"')
         end as output
       from
@@ -26,13 +26,11 @@ query "separate_partition_for_containers_created" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
-        when o.output like '%not a mountpoint%' then 'alarm'
+        when o.output = '' or o.output like '%not a mountpoint%' then 'alarm'
         else 'ok'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
-        when o.output like '%not a mountpoint%' then h.output || ' configured root directory is not a mount point.'
+        when o.output = '' or o.output like '%not a mountpoint%' then h.output || ' configured root directory is not a mount point.'
         else h.output || ' configured root directory is a mount point.'
       end as reason
     from
@@ -52,12 +50,11 @@ query "docker_daemon_run_as_root_user" {
         command = 'uname -s'
     ), command_output as (
       select
-        case
-          when os_output.output ilike '%Darwin%' then 'not linux'
-          else (select output from exec_command where command = 'ps -fe | grep ''dockerd''')
-        end as output
+        output
       from
-        os_output
+        exec_command
+      where
+        command = 'ps -fe | grep dockerd'
     ), hostname as (
       select
         output
@@ -69,12 +66,10 @@ query "docker_daemon_run_as_root_user" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output like '%root%' then 'alarm'
         else 'ok'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output like '%root%' then h.output || ' docker daemon is running as root user.'
         else h.output || ' docker daemon is not running as root user.'
       end as reason
@@ -615,7 +610,7 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
     ), command_output as (
       select
         case
-          when os_output.output ilike '%Darwin%' then 'not linux'
+          when os_output.output ilike '%Darwin%' then 'mac os'
           else (select output from exec_command where command = 'sudo auditctl -l | grep /etc/docker/daemon.json')
         end as output
       from
@@ -631,12 +626,12 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
+        when o.output ilike '%mac os%' then 'skip'
         when o.output = '' then 'alarm'
         else 'ok'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output ilike '%mac os%'  then ' This is MAC OS.'
         when o.output = '' then h.output || ' docker files and directories "/etc/docker/daemon.json" auditing is not configured.'
         else h.output || ' docker files and directories "/etc/docker/daemon.json" auditing is configured.'
       end as reason
@@ -958,12 +953,11 @@ query "docker_container_trust_enabled" {
         command = 'uname -s'
     ), command_output as (
       select
-        case
-          when os_output.output ilike '%Darwin%' then 'not linux'
-          else (select output from exec_command where command = 'echo $DOCKER_CONTENT_TRUST')
-        end as output
+        output
       from
-        os_output
+        exec_command
+      where
+        command = 'echo $DOCKER_CONTENT_TRUST'
     ), hostname as (
       select
         output
@@ -975,12 +969,10 @@ query "docker_container_trust_enabled" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output like '%1%' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output like '%1%' then h.output || ' docker container trust enabled.'
         else h.output || ' docker container trust disabled.'
       end as reason
@@ -1380,7 +1372,7 @@ query "docker_socket_file_ownership_root_docker" {
     ), command_output as (
       select
         case
-          when os_output.output ilike '%Darwin%' then 'not linux'
+          when os_output.output ilike '%Darwin%' then (select output from exec_command where command = 'stat -f %Su:%Sg /var/run/docker.sock | grep -v root:docker')
           else (select output from exec_command where command = 'stat -c %U:%G /var/run/docker.sock | grep -v root:docker')
         end as output
       from
@@ -1396,12 +1388,10 @@ query "docker_socket_file_ownership_root_docker" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output = '' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output = '' then h.output || ' docker socket file ownership is set to root:docker.'
         else h.output || ' docker socket file ownership is not set to root:docker.'
       end as reason
@@ -1423,7 +1413,7 @@ query "docker_sock_file_restrictive_permission" {
     ), command_output as (
       select
         case
-          when os_output.output ilike '%Darwin%' then 'not linux'
+          when os_output.output ilike '%Darwin%' then (select output from exec_command where command = 'stat -f %Op /var/run/docker.sock')
           else (select output from exec_command where command = 'stat -c %a /var/run/docker.sock')
         end as output
       from
@@ -1439,13 +1429,11 @@ query "docker_sock_file_restrictive_permission" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output like '%No such file or directory%' then 'skip'
         when o.output like '%660%' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output like h.output || '%No such file or directory%' then ' recommendation is not applicable as the file is unavailable.'
         else h.output || ' docker.socket file permission set to ' || o.output || '.'
       end as reason
@@ -1816,13 +1804,12 @@ query "docker_iptables_not_set" {
       where
         command = 'uname -s'
     ), command_output as (
-      select
-        case
-          when os_output.output ilike '%Darwin%' then 'not linux'
-          else (select output from exec_command where command = 'ps -ef | grep dockerd')
-        end as output
-      from
-        os_output
+        select
+          output
+        from
+          exec_command
+        where
+          command = 'ps -ef | grep dockerd'
     ), hostname as (
       select
         output
@@ -1834,13 +1821,11 @@ query "docker_iptables_not_set" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output like '%--iptables=false%' then 'ok'
         when o.output not like '%--iptables%' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output like '%--iptables=false%' then h.output || ' iptables is set to false.'
         when o.output not like '%--iptables%' then h.output || ' iptables not set.'
         else h.output || ' iptables are set to true.'
@@ -1862,12 +1847,11 @@ query "userland_proxy_disabled" {
         command = 'uname -s'
     ), command_output as (
       select
-        case
-          when os_output.output ilike '%Darwin%' then 'not linux'
-          else (select output from exec_command where command = 'ps -ef | grep dockerd')
-        end as output
+        output
       from
-        os_output
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
     ), hostname as (
       select
         output
@@ -1879,12 +1863,10 @@ query "userland_proxy_disabled" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output like '%--userland-proxy=false%' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output like '%--userland-proxy=false%' then h.output || ' userland proxy is Disabled.'
         else h.output || ' userland proxy is enabled.'
       end as reason
@@ -1905,12 +1887,11 @@ query "containers_no_new_privilege_disabled" {
         command = 'uname -s'
     ), command_output as (
       select
-        case
-          when os_output.output ilike '%Darwin%' then 'not linux'
-          else (select output from exec_command where command = 'ps -ef | grep dockerd')
-        end as output
+        output
       from
-        os_output
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
     ), hostname as (
       select
         output
@@ -1922,13 +1903,11 @@ query "containers_no_new_privilege_disabled" {
     select
       h.output as resource,
       case
-        when o.output ilike '%not linux%' then 'skip'
         when o.output like '%--no-new-privileges=false%' then 'alarm'
         when o.output not like '%--no-new-privileges%' then 'alarm'
         else 'ok'
       end as status,
       case
-        when o.output ilike '%not linux%'  then ' This is not linux OS.'
         when o.output like '%--no-new-privileges=false%' then h.output  || ' no new privileges is disabled.'
         when o.output not like '%--no-new-privileges%' then h.output  || ' no new privileges not set.'
         else h.output || ' no new privilege is enabled.'
