@@ -5,10 +5,16 @@ locals {
 }
 
 locals {
-  cis_v160_6_controls = flatten([
-    contains(var.control_types, "docker") ? [control.cis_v160_6_2] : [],
-    contains(var.control_types, "exec") ? [] : [],
-  ])
+  cis_v160_6_docker_controls = [control.cis_v160_6_2]
+
+  cis_v160_6_exec_controls = []
+}
+
+locals {
+  cis_v160_6_controls = concat(
+    contains(var.control_types, "docker") ? local.cis_v160_6_docker_controls : [],
+    contains(var.control_types, "exec") ? local.cis_v160_6_exec_controls : [],
+  )
 }
 
 benchmark "cis_v160_6" {

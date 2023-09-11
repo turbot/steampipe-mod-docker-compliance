@@ -10,7 +10,7 @@ locals {
 variable "control_types" {
   type        = list(string)
   description = "TO-DO"
-  default = ["docker", "exec"]
+  default = ["docker"]
 }
 
 mod "docker_compliance" {
