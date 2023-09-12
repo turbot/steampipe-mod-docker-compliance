@@ -7,7 +7,7 @@ locals {
 locals {
   cis_v160_7_docker_controls = [control.cis_v160_7_1, control.cis_v160_7_5, control.cis_v160_7_7]
 
-  ccis_v160_7_exec_controls = []
+  ccis_v160_7_exec_controls = [control.cis_v160_7_2]
 }
 
 locals {
@@ -36,6 +36,20 @@ control "cis_v160_7_1" {
 
   tags = merge(local.cis_v160_7_common_tags, {
     cis_item_id = "7.1"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_7_2" {
+  title       = "7.2 Ensure that swarm services are bound to a specific host interface"
+  description = "By default, Docker swarm services will listen on all interfaces on the host. This may not be necessary for the operation of the swarm where the host has multiple network interfaces."
+  query       = query.swarm_services_bound_to_specific_host_interface
+  //documentation = file("./cis_v160/docs/cis_v160_7_1.md")
+
+  tags = merge(local.cis_v160_7_common_tags, {
+    cis_item_id = "7.2"
     cis_level   = "1"
     cis_type    = "manual"
     service     = "Docker"

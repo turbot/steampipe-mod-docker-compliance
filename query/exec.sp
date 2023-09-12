@@ -1836,6 +1836,276 @@ query "docker_iptables_not_set" {
   EOQ
 }
 
+query "tls_authentication_docker_daemon_configured" {
+  sql = <<-EOQ
+    with os_output as (
+      select output
+      from exec_command
+      where command = 'uname -s'
+    ), command_output as (
+        select
+          case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (select output from exec_command where command = 'cat /etc/docker/daemon.json')
+          end as output
+        from os_output
+    ), hostname as (
+        select output
+        from exec_command
+        where command = 'hostname'
+    )
+    select
+        h.output as resource,
+        case
+            when o.output ilike '%not linux%' then 'skip'
+            when o.output::jsonb->>'hosts' not like '%tcp%' then 'info'
+            when o.output::jsonb->>'tlsverify' = 'true'
+                and o.output::jsonb->>'tlscacert' <> ''
+                and o.output::jsonb->>'tlscert' <> ''
+                and o.output::jsonb->>'tlskey' <> '' then 'ok'
+            else 'alarm'
+        end as status,
+        case
+            when o.output ilike '%not linux%' then 'This is not a Linux OS.'
+            when o.output::jsonb->>'hosts' not like '%tcp%' then h.output || ' Docker daemon not listening on TCP.'
+            when o.output::jsonb->>'tlsverify' = 'true'
+                and o.output::jsonb->>'tlscacert' <> ''
+                and o.output::jsonb->>'tlscert' <> ''
+                and o.output::jsonb->>'tlskey' <> '' then h.output || ' TLS authentication for Docker daemon is configured.'
+            else h.output || ' TLS authentication for Docker daemon is not configured.'
+        end as reason
+    from
+        hostname as h,
+        command_output as o;
+  EOQ
+}
+
+query "default_ulimit_configured" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ), command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
+    ), json_output as (
+      select
+          case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (select output from exec_command where command = 'cat /etc/docker/daemon.json')
+          end as output
+        from os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when j.output ilike '%not linux%' then 'skip'
+        when o.output like '%--default-ulimit%' or j.output::jsonb ->> 'default-ulimit' <> '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when j.output ilike '%not linux%' then 'This is not a Linux OS.'
+        when o.output like '%--default-ulimit%' or j.output::jsonb ->> 'default-ulimit' <> '' then h.output || ' Default ulimit is set.'
+        else h.output || ' Default ulimit is not set.'
+      end as reason
+    from
+      hostname as h,
+      command_output as o,
+      json_output as j;
+  EOQ
+}
+
+query "base_device_size_changed" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ), command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
+    ), json_output as (
+      select
+          case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (select output from exec_command where command = 'cat /etc/docker/daemon.json')
+          end as output
+        from os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when j.output ilike '%not linux%' then 'skip'
+        when o.output not like '%--storage-opt dm.basesize%' or j.output::jsonb->>'storage-opts' not like '%dm.basesize%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when j.output ilike '%not linux%' then 'This is not a Linux OS.'
+        when o.output not like '%--storage-opt dm.basesize%' or j.output::jsonb ->> 'storage-opts' not like '%dm.basesize%' then h.output || ' Default base device size is set.'
+        else h.output || ' Base device size is changed.'
+      end as reason
+    from
+      hostname as h,
+      command_output as o,
+      json_output as j;
+  EOQ
+}
+
+query "authorization_docker_client_command_enabled" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ), command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'ps -ef | grep dockerd'
+    ), json_output as (
+      select
+          case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (select output from exec_command where command = 'cat /etc/docker/daemon.json')
+          end as output
+        from os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when j.output ilike '%not linux%' then 'skip'
+        when o.output like '%--authorization-plugin%' or j.output::jsonb -> 'authorization-plugins' is not null then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when j.output ilike '%not linux%' then 'This is not a Linux OS.'
+        when o.output like '%--authorization-plugin%' or j.output::jsonb -> 'authorization-plugins' is not null then h.output || ' authorization for Docker client commands is enabled.'
+        else h.output || ' authorization for Docker client commands is disabled.'
+      end as reason
+    from
+      hostname as h,
+      command_output as o,
+      json_output as j;
+  EOQ
+}
+
+query "swarm_services_bound_to_specific_host_interface" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'docker info 2>/dev/null | grep -e "Swarm:*\sactive\s*"'
+    ), json_output as (
+      select
+          case
+            when command_output.output <> '' then (SELECT output FROM exec_command WHERE command = 'netstat -lnt | grep -e ''\\[::]:2377 '' -e '':::2377'' -e ''*:2377 '' -e '' 0\.0\.0\.0:2377 ''')
+            else ''
+          end as output
+        from command_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output = '' then 'ok'
+        when j.output <> '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output = '' then 'Swarm mode not enabled'
+        when j.output <> '' then h.output || ' swarm services are bound to a specific host interface.'
+        else h.output || ' swarm services are not bound to a specific host interface.'
+      end as reason
+    from
+      hostname as h,
+      command_output as o,
+      json_output as j;
+  EOQ
+}
+
+query "docker_socket_not_mounted_inside_containers" {
+  sql = <<-EOQ
+    with command_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'docker ps --quiet --all | xargs docker inspect --format ''{{ .Id }}: Volumes={{ .Mounts }}'' | grep docker.sock'
+    ), hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output = '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output = '' then 'Docker socket is not mounted inside any containers.'
+        else h.output || ' Docker socket is mounted inside ' || o.output || '.'
+      end as reason
+    from
+      hostname as h,
+      command_output as o;
+  EOQ
+}
+
 query "userland_proxy_disabled" {
   sql = <<-EOQ
     with os_output as (

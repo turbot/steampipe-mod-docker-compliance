@@ -5,10 +5,10 @@ locals {
 }
 
 locals {
-  cis_v160_2_docker_controls = [control.cis_v160_2_2, control.cis_v160_2_5, control.cis_v160_2_6, control.cis_v160_2_9, control.cis_v160_2_13, control.cis_v160_2_15, control.cis_v160_2_17 ]
+  cis_v160_2_docker_controls = [control.cis_v160_2_2, control.cis_v160_2_5, control.cis_v160_2_6, control.cis_v160_2_9, control.cis_v160_2_13, control.cis_v160_2_15, control.cis_v160_2_17]
 
   cis_v160_2_exec_controls = [
-    control.cis_v160_2_1, control.cis_v160_2_3, control.cis_v160_2_4, control.cis_v160_2_14, control.cis_v160_2_16
+    control.cis_v160_2_1, control.cis_v160_2_3, control.cis_v160_2_4, control.cis_v160_2_7, control.cis_v160_2_8, control.cis_v160_2_11, control.cis_v160_2_12, control.cis_v160_2_14, control.cis_v160_2_16
   ]
 }
 
@@ -115,6 +115,34 @@ control "cis_v160_2_6" {
   })
 }
 
+control "cis_v160_2_7" {
+  title       = "2.7 Ensure TLS authentication for Docker daemon is configured"
+  description = "It is possible to make the Docker daemon available remotely over a TCP port. If this is required, you should ensure that TLS authentication is configured in order to restrict access to the Docker daemon via IP address and port."
+  query       = query.tls_authentication_docker_daemon_configured
+  #documentation = file("./cis_v160/docs/cis_v160_2_6.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.7"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_2_8" {
+  title       = "2.8 Ensure the default ulimit is configured appropriately"
+  description = "Set the default ulimit options as appropriate in your environment."
+  query       = query.default_ulimit_configured
+  #documentation = file("./cis_v160/docs/cis_v160_2_6.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.8"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
 control "cis_v160_2_9" {
   title         = "2.9 Enable user namespace support"
   description   = "We should enable user namespace support in Docker daemon to utilize container user to host user re-mapping. This recommendation is beneficial where the containers you are using do not have an explicit container user defined in the container image. If the container images that you are using have a pre-defined non-root user, this recommendation may be skipped as this feature is still in its infancy, and might result in unpredictable issues or difficulty in configuration."
@@ -123,6 +151,34 @@ control "cis_v160_2_9" {
 
   tags = merge(local.cis_v160_2_common_tags, {
     cis_item_id = "2.9"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_2_11" {
+  title       = "2.11 Ensure base device size is not changed until needed"
+  description = "Under certain circumstances, you might need containers larger than 10G. Where this applies you should carefully choose the base device size."
+  query       = query.base_device_size_changed
+  #documentation = file("./cis_v160/docs/cis_v160_2_6.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.11"
+    cis_level   = "2"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_2_12" {
+  title       = "2.12 Ensure that authorization for Docker client commands is enabled"
+  description = "We should use native Docker authorization plugins or a third party authorization mechanism with the Docker daemon to manage access to Docker client commands."
+  query       = query.authorization_docker_client_command_enabled
+  #documentation = file("./cis_v160/docs/cis_v160_2_6.md")
+
+  tags = merge(local.cis_v160_2_common_tags, {
+    cis_item_id = "2.12"
     cis_level   = "2"
     cis_type    = "manual"
     service     = "Docker"
@@ -144,9 +200,9 @@ control "cis_v160_2_13" {
 }
 
 control "cis_v160_2_14" {
-  title         = "2.14 Ensure containers are restricted from acquiring new privileges"
-  description   = "By default you should restrict containers from acquiring additional privileges via suid or sgid."
-  query         = query.containers_no_new_privilege_disabled
+  title       = "2.14 Ensure containers are restricted from acquiring new privileges"
+  description = "By default you should restrict containers from acquiring additional privileges via suid or sgid."
+  query       = query.containers_no_new_privilege_disabled
   # documentation = file("./cis_v160/docs/cis_v160_2_14.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -172,9 +228,9 @@ control "cis_v160_2_15" {
 }
 
 control "cis_v160_2_16" {
-  title         = "2.16 Ensure Userland Proxy is Disabled"
-  description   = "The Docker daemon starts a userland proxy service for port forwarding whenever a port is exposed. Where hairpin NAT is available, this service is generally superfluous to requirements and can be disabled."
-  query         = query.userland_proxy_disabled
+  title       = "2.16 Ensure Userland Proxy is Disabled"
+  description = "The Docker daemon starts a userland proxy service for port forwarding whenever a port is exposed. Where hairpin NAT is available, this service is generally superfluous to requirements and can be disabled."
+  query       = query.userland_proxy_disabled
   # documentation = file("./cis_v160/docs/cis_v160_2_16.md")
 
   tags = merge(local.cis_v160_2_common_tags, {

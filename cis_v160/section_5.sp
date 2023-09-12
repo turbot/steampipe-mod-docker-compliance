@@ -14,7 +14,7 @@ locals {
   ]
 
   cis_v160_5_exec_controls = [
-    control.cis_v160_5_23, control.cis_v160_5_24
+    control.cis_v160_5_23, control.cis_v160_5_24, control.cis_v160_5_32
   ]
 }
 
@@ -340,6 +340,20 @@ control "cis_v160_5_31" {
 
   tags = merge(local.cis_v160_5_common_tags, {
     cis_item_id = "5.31"
+    cis_level   = "5"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_5_32" {
+  title       = "5.32 Ensure that the Docker socket is not mounted inside any containers"
+  description = "The Docker socket docker.sock should not be mounted inside a container."
+  query       = query.docker_socket_not_mounted_inside_containers
+  //documentation = file("./cis_v160/docs/cis_v160_5_31.md")
+
+  tags = merge(local.cis_v160_5_common_tags, {
+    cis_item_id = "5.32"
     cis_level   = "5"
     cis_type    = "manual"
     service     = "Docker"
