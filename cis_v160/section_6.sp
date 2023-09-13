@@ -5,7 +5,9 @@ locals {
 }
 
 locals {
-  cis_v160_6_docker_controls = [control.cis_v160_6_2]
+  cis_v160_6_docker_controls = [
+    control.cis_v160_6_2
+  ]
 
   cis_v160_6_exec_controls = []
 }

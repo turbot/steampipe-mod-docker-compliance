@@ -5,9 +5,14 @@ locals {
 }
 
 locals {
-  cis_v160_4_docker_controls = [control.cis_v160_4_6]
+  cis_v160_4_docker_controls = [
+    control.cis_v160_4_6
+  ]
 
-  cis_v160_4_exec_controls = [control.cis_v160_4_1, control.cis_v160_4_5]
+  cis_v160_4_exec_controls = [
+    control.cis_v160_4_1,
+    control.cis_v160_4_5
+  ]
 }
 
 locals {
@@ -46,7 +51,7 @@ control "cis_v160_4_5" {
   title         = "4.5 Ensure Content trust for Docker is Enabled"
   description   = "Content trust is disabled by default and should be enabled in line with organizational security policy."
   query         = query.docker_container_trust_enabled
-  # documentation = file("./cis_v160/docs/cis_v160_4_5.md")
+  documentation = file("./cis_v160/docs/cis_v160_4_5.md")
 
   tags = merge(local.cis_v160_4_common_tags, {
     cis_item_id = "4.5"

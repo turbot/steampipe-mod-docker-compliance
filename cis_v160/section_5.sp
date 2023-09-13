@@ -6,15 +6,32 @@ locals {
 
 locals {
   cis_v160_5_docker_controls = [
-    control.cis_v160_5_1, control.cis_v160_5_2, control.cis_v160_5_5, control.cis_v160_5_6,
-    control.cis_v160_5_10, control.cis_v160_5_11, control.cis_v160_5_12, control.cis_v160_5_13,
-    control.cis_v160_5_15, control.cis_v160_5_16, control.cis_v160_5_17, control.cis_v160_5_18,
-    control.cis_v160_5_19, control.cis_v160_5_20, control.cis_v160_5_21, control.cis_v160_5_22,
-    control.cis_v160_5_25, control.cis_v160_5_26, control.cis_v160_5_29, control.cis_v160_5_31
+    control.cis_v160_5_1,
+    control.cis_v160_5_2,
+    control.cis_v160_5_5,
+    control.cis_v160_5_6,
+    control.cis_v160_5_10,
+    control.cis_v160_5_11,
+    control.cis_v160_5_12,
+    control.cis_v160_5_13,
+    control.cis_v160_5_15,
+    control.cis_v160_5_16,
+    control.cis_v160_5_17,
+    control.cis_v160_5_18,
+    control.cis_v160_5_19,
+    control.cis_v160_5_20,
+    control.cis_v160_5_21,
+    control.cis_v160_5_22,
+    control.cis_v160_5_25,
+    control.cis_v160_5_26,
+    control.cis_v160_5_29,
+    control.cis_v160_5_31
   ]
 
   cis_v160_5_exec_controls = [
-    control.cis_v160_5_23, control.cis_v160_5_24, control.cis_v160_5_32
+    control.cis_v160_5_23,
+    control.cis_v160_5_24,
+    control.cis_v160_5_32
   ]
 }
 
@@ -262,10 +279,10 @@ control "cis_v160_5_22" {
 }
 
 control "cis_v160_5_23" {
-  title       = "5.23 Ensure that docker exec commands are not used with the privileged option"
-  description = "You should not use docker exec with the --privileged option."
-  query       = query.docker_exec_command_no_privilege_option
-  # documentation = file("./cis_v160/docs/cis_v160_5_23.md")
+  title         = "5.23 Ensure that docker exec commands are not used with the privileged option"
+  description   = "You should not use docker exec with the --privileged option."
+  query         = query.docker_exec_command_no_privilege_option
+  documentation = file("./cis_v160/docs/cis_v160_5_23.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
     cis_item_id = "5.23"
@@ -276,10 +293,10 @@ control "cis_v160_5_23" {
 }
 
 control "cis_v160_5_24" {
-  title       = "5.24 Ensure that docker exec commands are not used with the user=root option"
-  description = "You should not use docker exec with the --user=root option."
-  query       = query.docker_exec_command_no_user_root_option
-  # documentation = file("./cis_v160/docs/cis_v160_5_23.md")
+  title         = "5.24 Ensure that docker exec commands are not used with the user=root option"
+  description   = "You should not use docker exec with the --user=root option."
+  query         = query.docker_exec_command_no_user_root_option
+  documentation = file("./cis_v160/docs/cis_v160_5_24.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
     cis_item_id = "5.24"
@@ -347,10 +364,10 @@ control "cis_v160_5_31" {
 }
 
 control "cis_v160_5_32" {
-  title       = "5.32 Ensure that the Docker socket is not mounted inside any containers"
-  description = "The Docker socket docker.sock should not be mounted inside a container."
-  query       = query.docker_socket_not_mounted_inside_containers
-  //documentation = file("./cis_v160/docs/cis_v160_5_31.md")
+  title         = "5.32 Ensure that the Docker socket is not mounted inside any containers"
+  description   = "The Docker socket docker.sock should not be mounted inside a container."
+  query         = query.docker_socket_not_mounted_inside_containers
+  documentation = file("./cis_v160/docs/cis_v160_5_32.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
     cis_item_id = "5.32"

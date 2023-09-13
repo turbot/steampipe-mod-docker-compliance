@@ -51,7 +51,7 @@ control "cis_v160_2_1" {
   title       = "2.1 Run the Docker daemon as a non-root user, if possible"
   description = "Rootless mode executes the Docker daemon and containers inside a user namespace, with both the daemon and the container are running without root privileges."
   query       = query.docker_daemon_run_as_root_user
-  #documentation = file("./cis_v160/docs/cis_v160_2_1.md")
+  documentation = file("./cis_v160/docs/cis_v160_2_1.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
     cis_item_id = "2.1"
