@@ -7,7 +7,7 @@ locals {
 locals {
   cis_v160_3_docker_controls = []
 
-  cis_v160_3_exec_controls = [ control.cis_v160_3_1, control.cis_v160_3_2, control.cis_v160_3_3, control.cis_v160_3_4, control.cis_v160_3_5, control.cis_v160_3_6, control.cis_v160_3_7, control.cis_v160_3_8, control.cis_v160_3_15, control.cis_v160_3_16, control.cis_v160_3_17, control.cis_v160_3_18, control.cis_v160_3_19, control.cis_v160_3_20, control.cis_v160_3_21, control.cis_v160_3_22, control.cis_v160_3_23, control.cis_v160_3_24
+  cis_v160_3_exec_controls = [control.cis_v160_3_1, control.cis_v160_3_2, control.cis_v160_3_3, control.cis_v160_3_4, control.cis_v160_3_5, control.cis_v160_3_6, control.cis_v160_3_7, control.cis_v160_3_8, control.cis_v160_3_9, control.cis_v160_3_10, control.cis_v160_3_11, control.cis_v160_3_12, control.cis_v160_3_13, control.cis_v160_3_14, control.cis_v160_3_15, control.cis_v160_3_16, control.cis_v160_3_17, control.cis_v160_3_18, control.cis_v160_3_19, control.cis_v160_3_20, control.cis_v160_3_21, control.cis_v160_3_22, control.cis_v160_3_23, control.cis_v160_3_24
   ]
 }
 
@@ -135,6 +135,90 @@ control "cis_v160_3_8" {
 
   tags = merge(local.cis_v160_3_common_tags, {
     cis_item_id = "3.8"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_9" {
+  title       = "3.9 Ensure that TLS CA certificate file ownership is set to root:root"
+  description = "You should verify that the TLS CA certificate file (the file that is passed along with the -- tlscacert parameter) is individually owned and group owned by root."
+  query       = query.tls_ca_certificate_ownership_root_root
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.9"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_10" {
+  title       = "3.10 Ensure that TLS CA certificate file permissions are set to 444 or more restrictively"
+  description = "You should verify that the TLS CA certificate file (the file that is passed along with the -- tlscacert parameter) has permissions of 444 or is set more restrictively."
+  query       = query.tls_ca_certificate_permission_444
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.10"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_11" {
+  title       = "3.11 Ensure that Docker server certificate file ownership is set to root:root"
+  description = "You should verify that the Docker server certificate file (the file that is passed along with the --tlscert parameter) is individual owned and group owned by root."
+  query       = query.docker_server_certificate_ownership_root_root
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.11"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_12" {
+  title       = "3.12 Ensure that the Docker server certificate file permissions are set to 444 or more restrictively"
+  description = "You should verify that the Docker server certificate file (the file that is passed along with the --tlscert parameter) has permissions of 444 or more restrictive permissions."
+  query       = query.docker_server_certificate_permission_444
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.12"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_13" {
+  title       = "3.13 Ensure that the Docker server certificate key file ownership is set to root:root"
+  description = "You should verify that the Docker server certificate key file (the file that is passed along with the --tlskey parameter) is individually owned and group owned by root."
+  query       = query.docker_server_certificate_key_ownership_root_root
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.13"
+    cis_level   = "1"
+    cis_type    = "manual"
+    service     = "Docker"
+  })
+}
+
+control "cis_v160_3_14" {
+  title       = "3.14 Ensure that the Docker server certificate key file permissions are set to 400"
+  description = "You should verify that the Docker server certificate key file (the file that is passed along with the --tlskey parameter) has permissions of 400."
+  query       = query.docker_server_certificate_key_permission_400
+  #documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
+
+  tags = merge(local.cis_v160_3_common_tags, {
+    cis_item_id = "3.13"
     cis_level   = "1"
     cis_type    = "manual"
     service     = "Docker"

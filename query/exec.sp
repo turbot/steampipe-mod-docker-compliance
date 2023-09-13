@@ -1360,6 +1360,372 @@ query "etc_docker_directory_restrictive_permission" {
   EOQ
 }
 
+query "tls_ca_certificate_ownership_root_root" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ),perm_output as (
+    select
+        case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (
+                with json_value_cte as (
+                    select
+                        'stat -c %U:%G ' || (output::jsonb->>'tlscacert') || ' | grep -v root:root' as key_value
+                    from
+                        exec_command
+                    where
+                        command = 'cat /etc/docker/daemon.json'
+                    order by
+                        key_value
+                )
+                select
+                    output
+                from
+                    json_value_cte as a
+                    join
+                    exec_command
+                    on command = a.key_value
+            )
+        end as output
+    from
+        os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output ilike '%not linux%' then 'skip'
+        when o.output like '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output like '' then h.output || ' TLS CA certificate file ownership is set to root:root.'
+        else h.output || ' TLS CA certificate file ownership is set to ' || o.output || '.'
+        end as reason
+    from
+      hostname as h,
+      perm_output as o;
+  EOQ
+}
+
+query "tls_ca_certificate_permission_444" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ),perm_output as (
+    select
+        case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (
+                with json_value_cte as (
+                    select
+                        'stat -c %a ' || (output::jsonb->>'tlscacert') as key_value
+                    from
+                        exec_command
+                    where
+                        command = 'cat /etc/docker/daemon.json'
+                    order by
+                        key_value
+                )
+                select
+                    output
+                from
+                    json_value_cte as a
+                    join
+                    exec_command
+                    on command = a.key_value
+            )
+        end as output
+    from
+        os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output ilike '%not linux%' then 'skip'
+        when o.output like '%444%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output like '%444%' then h.output || ' TLS CA certificate file permissions are set to 444.'
+        else h.output || ' TLS CA certificate file permissions are set to ' || o.output || '.'
+        end as reason
+    from
+      hostname as h,
+      perm_output as o;
+  EOQ
+}
+
+query "docker_server_certificate_ownership_root_root" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ),perm_output as (
+    select
+        case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (
+                with json_value_cte as (
+                    select
+                        'stat -c %U:%G ' || (output::jsonb->>'tlscert') || ' | grep -v root:root' as key_value
+                    from
+                        exec_command
+                    where
+                        command = 'cat /etc/docker/daemon.json'
+                    order by
+                        key_value
+                )
+                select
+                    output
+                from
+                    json_value_cte as a
+                    join
+                    exec_command
+                    on command = a.key_value
+            )
+        end as output
+    from
+        os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output ilike '%not linux%' then 'skip'
+        when o.output like '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output like '' then h.output || ' server certificate file ownership is set to root:root.'
+        else h.output || ' server certificate file ownership is set to ' || o.output || '.'
+        end as reason
+    from
+      hostname as h,
+      perm_output as o;
+  EOQ
+}
+
+query "docker_server_certificate_permission_444" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ),perm_output as (
+    select
+        case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (
+                with json_value_cte as (
+                    select
+                        'stat -c %a ' || (output::jsonb->>'tlscert') as key_value
+                    from
+                        exec_command
+                    where
+                        command = 'cat /etc/docker/daemon.json'
+                    order by
+                        key_value
+                )
+                select
+                    output
+                from
+                    json_value_cte as a
+                    join
+                    exec_command
+                    on command = a.key_value
+            )
+        end as output
+    from
+        os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output ilike '%not linux%' then 'skip'
+        when o.output like '%444%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output like '%444%' then h.output || ' server certificate file permissions are set to 444.'
+        else h.output || ' server certificate file permissions are set to ' || o.output || '.'
+        end as reason
+    from
+      hostname as h,
+      perm_output as o;
+  EOQ
+}
+
+query "docker_server_certificate_key_ownership_root_root" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ),perm_output as (
+    select
+        case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (
+                with json_value_cte as (
+                    select
+                        'stat -c %U:%G ' || (output::jsonb->>'tlskey') || ' | grep -v root:root' as key_value
+                    from
+                        exec_command
+                    where
+                        command = 'cat /etc/docker/daemon.json'
+                    order by
+                        key_value
+                )
+                select
+                    output
+                from
+                    json_value_cte as a
+                    join
+                    exec_command
+                    on command = a.key_value
+            )
+        end as output
+    from
+        os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output ilike '%not linux%' then 'skip'
+        when o.output like '' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output like '' then h.output || ' server certificate key file ownership is set to root:root.'
+        else h.output || ' server certificate key file ownership is set to ' || o.output || '.'
+        end as reason
+    from
+      hostname as h,
+      perm_output as o;
+  EOQ
+}
+
+query "docker_server_certificate_key_permission_400" {
+  sql = <<-EOQ
+    with os_output as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'uname -s'
+    ),perm_output as (
+    select
+        case
+            when os_output.output ilike '%darwin%' then 'not linux'
+            else (
+                with json_value_cte as (
+                    select
+                        'stat -c %a ' || (output::jsonb->>'tlskey') as key_value
+                    from
+                        exec_command
+                    where
+                        command = 'cat /etc/docker/daemon.json'
+                    order by
+                        key_value
+                )
+                select
+                    output
+                from
+                    json_value_cte as a
+                    join
+                    exec_command
+                    on command = a.key_value
+            )
+        end as output
+    from
+        os_output
+    ),hostname as (
+      select
+        output
+      from
+        exec_command
+      where
+        command = 'hostname'
+    )
+    select
+      h.output as resource,
+      case
+        when o.output ilike '%not linux%' then 'skip'
+        when o.output like '%400%' then 'ok'
+        else 'alarm'
+      end as status,
+      case
+        when o.output ilike '%not linux%'  then ' This is not linux OS.'
+        when o.output like '%400%' then h.output || ' server certificate key file permissions are set to 400.'
+        else h.output || ' server certificate key file permissions are set to ' || o.output || '.'
+        end as reason
+    from
+      hostname as h,
+      perm_output as o;
+  EOQ
+}
+
 query "docker_socket_file_ownership_root_docker" {
   sql = <<-EOQ
     with os_output as (
