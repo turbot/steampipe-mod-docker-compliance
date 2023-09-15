@@ -34,10 +34,11 @@ brew tap turbot/tap
 brew install steampipe
 ```
 
-Install the Docker plugins with [Steampipe](https://steampipe.io):
+Install the Docker & Exec plugins with [Steampipe](https://steampipe.io):
 
 ```sh
 steampipe plugin install docker
+steampipe plugin install exec
 ```
 
 Clone:
@@ -88,7 +89,44 @@ This mod uses the credentials configured in the [Steampipe Docker plugin](https:
 
 ### Configuration
 
-No extra configuration is required.
+This mod supports Docker running in local macOS and remote server. You can execute the benchmark from local laptop by configuring remote settings in respective plugin configuration files such as `docker.spc` and `exec.spc`.
+
+#### Remote Docker setup
+
+When Docker setup hosted in remote server, following an example of `docker.spc` with TLS setup.
+More info on [how to use TLS](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket).
+
+```
+connection "docker" {
+  plugin = "docker"
+  host        = "tcp://12.345.67.890:2376"
+  cert_path   = "<path to the cert and key files>"
+  # api_version = "1.41"
+  tls_verify  = true
+}
+```
+
+ `exec.spc` as below,
+
+```
+connection "exec" {
+  plugin      = "exec"
+  host        = "12.345.67.890"
+  user        = "ec2-user"
+  protocol    = "ssh"
+  private_key = "<path to the server private key.pem file>"
+}
+```
+
+#### Local Docker setup
+
+When executed in local macOS, this mod only execute the Docker plugin compatible controls and skips the controls not compatible to evaluate using Exec plugin. Example for `docker.spc`
+
+```
+connection "docker" {
+  plugin = "docker"
+}
+```
 
 ## Contributing
 
