@@ -2,14 +2,14 @@ query "container_non_root_user" {
   sql = <<-EOQ
     with command_output as (
       select
-        output
+        btrim(output, E' \n\r\t') as output
       from
         exec_command
       where
         command = 'docker ps --quiet | xargs -I{} docker exec {} cat /proc/1/status | grep ''^Uid:'' | awk ''{print $3}'''
     ), hostname as (
       select
-        output
+        btrim(output, E' \n\r\t') as output
       from
         exec_command
       where

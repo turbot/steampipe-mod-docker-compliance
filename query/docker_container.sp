@@ -254,8 +254,8 @@ query "container_cgroup_usage" {
         else 'alarm'
       end as status,
       case
-        when inspect -> 'HostConfig' ->> 'CgroupParent' = '' then (names ->> 0) || ' are not running under the default docker cgroup.'
-        else (names ->> 0) || ' are running under the default docker cgroup.'
+        when inspect -> 'HostConfig' ->> 'CgroupParent' = '' then (names ->> 0) || ' are not running under the default Docker cgroup.'
+        else (names ->> 0) || ' are running under the default Docker cgroup.'
       end as reason
     from
       docker_container;
