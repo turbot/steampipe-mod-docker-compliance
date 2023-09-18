@@ -9,9 +9,9 @@ locals {
 
 variable "control_types" {
   type        = list(string)
-  description = "Set of two values used to initiate the execution of compliance controls using only specfic plugin or both"
-  # A list of tag names to include as dimensions for resources that support
-  # Default setting is using both docker * exec
+  description = "Set of two values used to initiate the execution of compliance controls using only specific plugin or both"
+  # A list of plugin names to include as execution mode for macOS or Linux based OS
+  # Default setting is using both docker & exec
   default = ["docker", "exec"]
 }
 

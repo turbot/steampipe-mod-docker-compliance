@@ -23,6 +23,71 @@ Run individual configuration, compliance and security controls or full complianc
 - **[Benchmarks and controls →](https://hub.steampipe.io/mods/turbot/docker_compliance/controls)**
 - **[Named queries →](https://hub.steampipe.io/mods/turbot/docker_compliance/queries)**
 
+## Docker & Exec configuration
+
+### Local configuration
+
+When docker is hosted in local macOS or Linux operating system
+
+```
+connection "docker" {
+  plugin = "docker"
+}
+```
+
+```
+connection "exec" {
+  plugin      = "exec"
+}
+```
+
+### Remote configuration
+
+When docker is hosted in remote operating system
+
+```
+connection "docker" {
+  plugin = "docker"
+  host        = "tcp://12.345.67.890:2376"
+  cert_path   = "<path to the cert and key files>"
+  api_version = "1.41"
+  tls_verify  = true
+}
+```
+***api_version** is the Docker API version used on the remote server. You can check this by `docker version` command*
+```
+connection "exec" {
+  plugin      = "exec"
+  host        = "12.345.67.890"
+  user        = "ec2-user"
+  protocol    = "ssh"
+  private_key = "<path to the server private key.pem file>"
+}
+```
+
+### Using workspace
+
+More info on [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace)
+
+### Multiple connection / Aggregator
+
+### Variables
+
+// TO DO
+```
+variable "control_types" {
+  type        = list(string)
+  description = "Set of two values used to initiate the execution of compliance controls using only specific plugin or both"
+  # A list of plugin names to include as execution mode for macOS or Linux based OS
+  # Default setting is using both docker & exec
+  default = ["docker", "exec"]
+}
+```
+
+### macOS compatibility
+
+ // TO DO
+
 ## Getting started
 
 ### Installation
