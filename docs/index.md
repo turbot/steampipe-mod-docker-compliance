@@ -67,13 +67,16 @@ connection "exec" {
 
 ### Using workspace
 
-More info on [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace)
+// TO DO
 
-### Multiple connection / Aggregator
+### Multiple connection
+
+// TO DO
 
 ### Variables
 
 // TO DO
+
 ```
 variable "control_types" {
   type        = list(string)
@@ -84,9 +87,9 @@ variable "control_types" {
 }
 ```
 
-### macOS compatibility
+### Operating system compatibility
 
- // TO DO
+ File paths in Docker can differ between macOS and Linux due to the underlying architecture and file system differences between the two operating systems. There are some key differences in `Filesystem & path` , `Volume mounting` , `Permissions` , `Case sensitivity` etc. Due to some of these differences, some of the controls are skipped when executed in local macOS.
 
 ## Getting started
 
@@ -154,44 +157,7 @@ This mod uses the credentials configured in the [Steampipe Docker plugin](https:
 
 ### Configuration
 
-This mod supports Docker running in local macOS and remote server. You can execute the benchmark from local laptop by configuring remote settings in respective plugin configuration files such as `docker.spc` and `exec.spc`.
-
-#### Remote Docker setup
-
-When Docker setup hosted in remote server, following an example of `docker.spc` with TLS setup.
-More info on [how to use TLS](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket).
-
-```
-connection "docker" {
-  plugin = "docker"
-  host        = "tcp://12.345.67.890:2376"
-  cert_path   = "<path to the cert and key files>"
-  # api_version = "1.41"
-  tls_verify  = true
-}
-```
-
- `exec.spc` as below,
-
-```
-connection "exec" {
-  plugin      = "exec"
-  host        = "12.345.67.890"
-  user        = "ec2-user"
-  protocol    = "ssh"
-  private_key = "<path to the server private key.pem file>"
-}
-```
-
-#### Local Docker setup
-
-When executed in local macOS, this mod only execute the Docker plugin compatible controls and skips the controls not compatible to evaluate using Exec plugin. Example for `docker.spc`
-
-```
-connection "docker" {
-  plugin = "docker"
-}
-```
+No extra configuration is required.
 
 ## Contributing
 
