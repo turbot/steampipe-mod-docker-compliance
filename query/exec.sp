@@ -1774,7 +1774,7 @@ query "swarm_services_bound_to_specific_host_interface" {
         from command_output
     ),hostname as (
       select
-        output
+        btrim(output, E' \n\r\t') as output
       from
         exec_command
       where
