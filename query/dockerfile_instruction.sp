@@ -3,8 +3,8 @@ query "container_non_root_user" {
     ${local.hostname_sql}
      command_output as (
       select
-        output,
-         _ctx ->> 'connection' as conn
+        stdout_output,
+         _ctx ->> 'connection_name' as conn
       from
         exec_command
       where
@@ -13,11 +13,11 @@ query "container_non_root_user" {
     select
       host as resource,
       case
-        when o.output like '%0%' then 'alarm'
+        when o.stdout_output like '%0%' then 'alarm'
         else 'ok'
       end as status,
       host || case
-        when o.output like '%0%' then host || ' container process is running as root user.'
+        when o.stdout_output like '%0%' then host || ' container process is running as root user.'
         else host || ' container process is not running as root user.'
       end as reason
     from

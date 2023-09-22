@@ -48,9 +48,9 @@ benchmark "cis_v160_2" {
 }
 
 control "cis_v160_2_1" {
-  title       = "2.1 Run the Docker daemon as a non-root user, if possible"
-  description = "Rootless mode executes the Docker daemon and containers inside a user namespace, with both the daemon and the container are running without root privileges."
-  query       = query.docker_daemon_run_as_root_user
+  title         = "2.1 Run the Docker daemon as a non-root user, if possible"
+  description   = "Rootless mode executes the Docker daemon and containers inside a user namespace, with both the daemon and the container are running without root privileges."
+  query         = query.docker_daemon_run_as_root_user
   documentation = file("./cis_v160/docs/cis_v160_2_1.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -76,9 +76,9 @@ control "cis_v160_2_2" {
 }
 
 control "cis_v160_2_3" {
-  title       = "2.3 Ensure the logging level is set to 'info'"
-  description = "Set Docker daemon log level to info."
-  query       = query.logging_level_set_to_info
+  title         = "2.3 Ensure the logging level is set to 'info'"
+  description   = "Set Docker daemon log level to info."
+  query         = query.logging_level_set_to_info
   documentation = file("./cis_v160/docs/cis_v160_2_3.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -90,9 +90,9 @@ control "cis_v160_2_3" {
 }
 
 control "cis_v160_2_4" {
-  title       = "2.3 Ensure Docker is allowed to make changes to iptables '"
-  description = "The iptables firewall is used to set up, maintain, and inspect the tables of IP packet filter rules within the Linux kernel. The Docker daemon should be allowed to make changes to the iptables ruleset."
-  query       = query.docker_iptables_not_set
+  title         = "2.3 Ensure Docker is allowed to make changes to iptables '"
+  description   = "The iptables firewall is used to set up, maintain, and inspect the tables of IP packet filter rules within the Linux kernel. The Docker daemon should be allowed to make changes to the iptables ruleset."
+  query         = query.docker_iptables_not_set
   documentation = file("./cis_v160/docs/cis_v160_2_3.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -132,9 +132,9 @@ control "cis_v160_2_6" {
 }
 
 control "cis_v160_2_7" {
-  title       = "2.7 Ensure TLS authentication for Docker daemon is configured"
-  description = "It is possible to make the Docker daemon available remotely over a TCP port. If this is required, you should ensure that TLS authentication is configured in order to restrict access to the Docker daemon via IP address and port."
-  query       = query.tls_authentication_docker_daemon_configured
+  title         = "2.7 Ensure TLS authentication for Docker daemon is configured"
+  description   = "It is possible to make the Docker daemon available remotely over a TCP port. If this is required, you should ensure that TLS authentication is configured in order to restrict access to the Docker daemon via IP address and port."
+  query         = query.tls_authentication_docker_daemon_configured
   documentation = file("./cis_v160/docs/cis_v160_2_7.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -146,9 +146,9 @@ control "cis_v160_2_7" {
 }
 
 control "cis_v160_2_8" {
-  title       = "2.8 Ensure the default ulimit is configured appropriately"
-  description = "Set the default ulimit options as appropriate in your environment."
-  query       = query.default_ulimit_configured
+  title         = "2.8 Ensure the default ulimit is configured appropriately"
+  description   = "Set the default ulimit options as appropriate in your environment."
+  query         = query.default_ulimit_configured
   documentation = file("./cis_v160/docs/cis_v160_2_8.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -174,9 +174,9 @@ control "cis_v160_2_9" {
 }
 
 control "cis_v160_2_11" {
-  title       = "2.11 Ensure base device size is not changed until needed"
-  description = "Under certain circumstances, you might need containers larger than 10G. Where this applies you should carefully choose the base device size."
-  query       = query.base_device_size_changed
+  title         = "2.11 Ensure base device size is not changed until needed"
+  description   = "Under certain circumstances, you might need containers larger than 10G. Where this applies you should carefully choose the base device size."
+  query         = query.base_device_size_changed
   documentation = file("./cis_v160/docs/cis_v160_2_11.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -188,9 +188,9 @@ control "cis_v160_2_11" {
 }
 
 control "cis_v160_2_12" {
-  title       = "2.12 Ensure that authorization for Docker client commands is enabled"
-  description = "We should use native Docker authorization plugins or a third party authorization mechanism with the Docker daemon to manage access to Docker client commands."
-  query       = query.authorization_docker_client_command_enabled
+  title         = "2.12 Ensure that authorization for Docker client commands is enabled"
+  description   = "We should use native Docker authorization plugins or a third party authorization mechanism with the Docker daemon to manage access to Docker client commands."
+  query         = query.authorization_docker_client_command_enabled
   documentation = file("./cis_v160/docs/cis_v160_2_12.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
