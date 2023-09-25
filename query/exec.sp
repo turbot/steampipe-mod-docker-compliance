@@ -46,7 +46,6 @@ query "separate_partition_for_containers_created" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = E'mountpoint -- "$(docker info -f \'{{ .DockerRootDir }}\')"'
     ),
     darwin_output as (
@@ -158,8 +157,7 @@ query "docker_daemon_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /usr/bin/dockerd)'
+        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/dockerd)'
     )
     select
       host as resource,
@@ -178,7 +176,8 @@ query "docker_daemon_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn
+      and os.os_conn = o.conn
   EOQ
 }
 
@@ -194,7 +193,6 @@ query "docker_socket_file_ownership_set_to_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G /usr/lib/systemd/system/docker.socket | grep -v root:root)'
     ),
     linux_file_location as (
@@ -206,7 +204,6 @@ query "docker_socket_file_ownership_set_to_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(systemctl show -p FragmentPath docker.socket)'
     )
     select
@@ -229,7 +226,7 @@ query "docker_socket_file_ownership_set_to_root" {
       linux_output as o,
       linux_file_location as l
     where
-      host_conn = os_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -245,7 +242,6 @@ query "etc_docker_directory_ownership_set_to_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G /etc/docker | grep -v root:root)'
     )
     select
@@ -265,7 +261,7 @@ query "etc_docker_directory_ownership_set_to_root" {
       os_output as os,
       linux_output as o
     where
-      host_conn = os_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -281,8 +277,7 @@ query "docker_files_and_directories_run_containerd_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /run/containerd)'
+        and command = 'echo $(sudo -n auditctl -l | grep /run/containerd)'
     )
     select
       host as resource,
@@ -301,7 +296,7 @@ query "docker_files_and_directories_run_containerd_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -317,8 +312,7 @@ query "docker_files_and_directories_var_lib_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /var/lib/docker)'
+        and command = 'echo $(sudo -n auditctl -l | grep /var/lib/docker)'
     )
     select
       host as resource,
@@ -337,7 +331,7 @@ query "docker_files_and_directories_var_lib_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -353,8 +347,7 @@ query "docker_files_and_directories_etc_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /etc/docker)'
+        and command = 'echo $(sudo -n auditctl -l | grep /etc/docker)'
     )
     select
       host as resource,
@@ -373,7 +366,7 @@ query "docker_files_and_directories_etc_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -389,8 +382,7 @@ query "docker_files_and_directories_docker_service_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep docker.service)'
+        and command = 'echo $(sudo -n auditctl -l | grep docker.service)'
     ),
     linux_file_location as (
       select
@@ -401,7 +393,6 @@ query "docker_files_and_directories_docker_service_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(systemctl show -p FragmentPath docker.service)'
     )
     select
@@ -424,7 +415,7 @@ query "docker_files_and_directories_docker_service_auditing_configured" {
       linux_output as o,
       linux_file_location as l
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -440,8 +431,7 @@ query "docker_files_and_directories_containerd_sock_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep containerd.sock)'
+        and command = 'echo $(sudo -n auditctl -l | grep containerd.sock)'
     ),
     linux_file_location as (
       select
@@ -452,7 +442,6 @@ query "docker_files_and_directories_containerd_sock_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'grep ''containerd.sock'' /etc/containerd/config.toml'
     )
     select
@@ -475,7 +464,7 @@ query "docker_files_and_directories_containerd_sock_auditing_configured" {
       linux_output as o,
       linux_file_location as l
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -491,8 +480,7 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep docker.socket)'
+        and command = 'echo $(sudo -n auditctl -l | grep docker.socket)'
     ),
     linux_file_location as (
       select
@@ -503,7 +491,6 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(systemctl show -p FragmentPath docker.socket)'
     )
     select
@@ -526,7 +513,7 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
       linux_output as o,
       linux_file_location as l
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -542,8 +529,7 @@ query "docker_files_and_directories_etc_default_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /etc/default/docker)'
+        and command = 'echo $(sudo -n auditctl -l | grep /etc/default/docker)'
     )
     select
       host as resource,
@@ -562,7 +548,7 @@ query "docker_files_and_directories_etc_default_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -578,8 +564,7 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /etc/docker/daemon.json)'
+        and command = 'echo $(sudo -n auditctl -l | grep /etc/docker/daemon.json)'
     )
     select
       host as resource,
@@ -598,7 +583,7 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -614,8 +599,7 @@ query "docker_files_and_directories_etc_containerd_config_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /etc/containerd/config.toml)'
+        and command = 'echo $(sudo -n auditctl -l | grep /etc/containerd/config.toml)'
     )
     select
       host as resource,
@@ -634,7 +618,7 @@ query "docker_files_and_directories_etc_containerd_config_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -650,8 +634,7 @@ query "docker_files_and_directories_etc_sysconfig_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /etc/sysconfig/docker)'
+        and command = 'echo $(sudo -n auditctl -l | grep /etc/sysconfig/docker)'
     )
     select
       host as resource,
@@ -670,7 +653,7 @@ query "docker_files_and_directories_etc_sysconfig_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -686,8 +669,7 @@ query "docker_files_and_directories_usr_bin_containerd_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /usr/bin/containerd)'
+        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd)'
     )
     select
       host as resource,
@@ -706,7 +688,7 @@ query "docker_files_and_directories_usr_bin_containerd_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -722,8 +704,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_auditing_configured"
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /usr/bin/containerd-shim)'
+        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd-shim)'
     )
     select
       host as resource,
@@ -742,7 +723,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_auditing_configured"
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -758,8 +739,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v1_auditing_con
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /usr/bin/containerd-shim-runc-v1)'
+        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd-shim-runc-v1)'
     )
     select
       host as resource,
@@ -778,7 +758,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v1_auditing_con
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -794,8 +774,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v2_auditing_con
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /usr/bin/containerd-shim-runc-v2)'
+        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd-shim-runc-v2)'
     )
     select
       host as resource,
@@ -814,7 +793,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v2_auditing_con
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -830,8 +809,7 @@ query "docker_files_and_directories_usr_bin_runc_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'echo $(sudo auditctl -l | grep /usr/bin/runc)'
+        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/runc)'
     )
     select
       host as resource,
@@ -850,7 +828,7 @@ query "docker_files_and_directories_usr_bin_runc_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -896,7 +874,6 @@ query "docker_containerd_socket_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'stat -c %a /run/containerd/containerd.sock'
     )
     select
@@ -917,7 +894,7 @@ query "docker_containerd_socket_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -933,7 +910,6 @@ query "docker_containerd_socket_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G /run/containerd/containerd.sock | grep -v root:root)'
     )
     select
@@ -953,7 +929,7 @@ query "docker_containerd_socket_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -969,7 +945,6 @@ query "etc_sysconfig_docker_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G /etc/sysconfig/docker | grep -v root:root)'
     )
     select
@@ -989,7 +964,7 @@ query "etc_sysconfig_docker_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1005,7 +980,6 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %a /etc/sysconfig/docker)'
     )
     select
@@ -1026,7 +1000,7 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1042,7 +1016,6 @@ query "docker_service_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G "$(systemctl show -p FragmentPath docker.service | awk -F''='' ''{print $2}'')" | grep -v root:root)'
     ),
     linux_file_location as (
@@ -1054,7 +1027,6 @@ query "docker_service_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(systemctl show -p FragmentPath docker.service)'
     )
     select
@@ -1077,7 +1049,7 @@ query "docker_service_file_ownership_root_root" {
       linux_output as o,
       linux_file_location as l
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1093,7 +1065,6 @@ query "docker_service_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %a "$(systemctl show -p FragmentPath docker.service | awk -F''='' ''{print $2}'')")'
     ),
     linux_file_location as (
@@ -1105,7 +1076,6 @@ query "docker_service_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(systemctl show -p FragmentPath docker.service)'
     )
     select
@@ -1127,7 +1097,7 @@ query "docker_service_file_restrictive_permission" {
       linux_output as o,
       linux_file_location as l
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1143,7 +1113,6 @@ query "docker_socket_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %a "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')")'
     ),
     linux_file_location as (
@@ -1155,7 +1124,6 @@ query "docker_socket_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(systemctl show -p FragmentPath docker.socket)'
     )
     select
@@ -1177,7 +1145,7 @@ query "docker_socket_file_restrictive_permission" {
       linux_output as o,
       linux_file_location as l
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1193,7 +1161,6 @@ query "etc_docker_directory_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %a /etc/docker)'
     )
     select
@@ -1214,7 +1181,7 @@ query "etc_docker_directory_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1231,7 +1198,6 @@ query "tls_ca_certificate_ownership_root_root" {
           os_output
         where
           os_conn = _ctx ->> 'connection_name'
-          and os_output.os <> 'Darwin'
           and command = 'cat /etc/docker/daemon.json'
         order by
           key_value
@@ -1264,7 +1230,7 @@ query "tls_ca_certificate_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1281,7 +1247,6 @@ query "tls_ca_certificate_permission_444" {
           os_output
         where
           os_conn = _ctx ->> 'connection_name'
-          and os_output.os <> 'Darwin'
           and command = 'cat /etc/docker/daemon.json'
         order by
           key_value
@@ -1314,7 +1279,7 @@ query "tls_ca_certificate_permission_444" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1331,7 +1296,6 @@ query "docker_server_certificate_ownership_root_root" {
           os_output
         where
           os_conn = _ctx ->> 'connection_name'
-          and os_output.os <> 'Darwin'
           and command = 'cat /etc/docker/daemon.json'
         order by
           key_value
@@ -1364,7 +1328,7 @@ query "docker_server_certificate_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1381,7 +1345,6 @@ query "docker_server_certificate_permission_444" {
           os_output
         where
           os_conn = _ctx ->> 'connection_name'
-          and os_output.os <> 'Darwin'
           and command = 'cat /etc/docker/daemon.json'
         order by
           key_value
@@ -1414,7 +1377,7 @@ query "docker_server_certificate_permission_444" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1431,7 +1394,6 @@ query "docker_server_certificate_key_ownership_root_root" {
           os_output
         where
           os_conn = _ctx ->> 'connection_name'
-          and os_output.os <> 'Darwin'
           and command = 'cat /etc/docker/daemon.json'
         order by
           key_value
@@ -1464,7 +1426,7 @@ query "docker_server_certificate_key_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1481,7 +1443,6 @@ query "docker_server_certificate_key_permission_400" {
           os_output
         where
           os_conn = _ctx ->> 'connection_name'
-          and os_output.os <> 'Darwin'
           and command = 'cat /etc/docker/daemon.json'
         order by
           key_value
@@ -1514,7 +1475,7 @@ query "docker_server_certificate_key_permission_400" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1530,7 +1491,6 @@ query "docker_socket_file_ownership_root_docker" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'stat -c %U:%G /var/run/docker.sock | grep -v root:docker'
     ),
     darwin_output as (
@@ -1565,7 +1525,7 @@ query "docker_socket_file_ownership_root_docker" {
       os_output as os,
       command_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1581,7 +1541,6 @@ query "docker_sock_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'stat -c %a /var/run/docker.sock'
     ),
     darwin_output as (
@@ -1617,7 +1576,7 @@ query "docker_sock_file_restrictive_permission" {
       os_output as os,
       command_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1633,7 +1592,6 @@ query "daemon_json_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G /etc/docker/daemon.json | grep -v root:root)'
     )
     select
@@ -1655,7 +1613,7 @@ query "daemon_json_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1671,7 +1629,6 @@ query "daemon_json_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'stat -c %a /etc/docker/daemon.json'
     )
     select
@@ -1692,7 +1649,7 @@ query "daemon_json_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1708,7 +1665,6 @@ query "etc_default_docker_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'stat -c %U:%G /etc/default/docker | grep -v root:root'
     )
     select
@@ -1730,7 +1686,7 @@ query "etc_default_docker_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1746,7 +1702,6 @@ query "etc_default_docker_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'stat -c %a /etc/default/docker'
     )
     select
@@ -1767,7 +1722,7 @@ query "etc_default_docker_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1783,8 +1738,7 @@ query "docker_exec_command_no_privilege_option" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'sudo ausearch -k docker | grep exec | grep privileged'
+        and command = 'sudo -n ausearch -k docker | grep exec | grep privileged'
     )
     select
       host as resource,
@@ -1803,7 +1757,7 @@ query "docker_exec_command_no_privilege_option" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1819,8 +1773,7 @@ query "docker_exec_command_no_user_root_option" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
-        and command = 'sudo ausearch -k docker | grep exec | grep user'
+        and command = 'sudo -n ausearch -k docker | grep exec | grep user'
     )
     select
       host as resource,
@@ -1839,7 +1792,7 @@ query "docker_exec_command_no_user_root_option" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1855,7 +1808,6 @@ query "registry_certificate_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'echo $(stat -c %U:%G /etc/docker/certs.d/* | grep -v root:root)'
     )
     select
@@ -1875,7 +1827,7 @@ query "registry_certificate_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1891,7 +1843,6 @@ query "registry_certificate_file_permissions_444" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'find /etc/docker/certs.d/ -type f -exec stat -c "%a %n" {} \;'
     )
     select
@@ -1912,7 +1863,7 @@ query "registry_certificate_file_permissions_444" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -1960,7 +1911,6 @@ query "tls_authentication_docker_daemon_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'cat /etc/docker/daemon.json'
     )
     select
@@ -1988,7 +1938,7 @@ query "tls_authentication_docker_daemon_configured" {
       os_output as os,
       linux_output as o
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -2004,7 +1954,6 @@ query "default_ulimit_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'ps -ef | grep dockerd'
     ), linux_output as (
       select
@@ -2015,7 +1964,6 @@ query "default_ulimit_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'cat /etc/docker/daemon.json'
     )
     select
@@ -2036,7 +1984,7 @@ query "default_ulimit_configured" {
       command_output as o,
       linux_output as j
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -2052,7 +2000,6 @@ query "base_device_size_changed" {
         os_output
       where
          os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'ps -ef | grep dockerd'
     ), linux_output as (
       select
@@ -2063,7 +2010,6 @@ query "base_device_size_changed" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'cat /etc/docker/daemon.json'
     )
     select
@@ -2084,7 +2030,7 @@ query "base_device_size_changed" {
       command_output as o,
       linux_output as j
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
@@ -2100,7 +2046,6 @@ query "authorization_docker_client_command_enabled" {
         os_output
       where
          os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'ps -ef | grep dockerd'
     ), linux_output as (
       select
@@ -2111,7 +2056,6 @@ query "authorization_docker_client_command_enabled" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and os_output.os <> 'Darwin'
         and command = 'cat /etc/docker/daemon.json'
     )
     select
@@ -2132,7 +2076,7 @@ query "authorization_docker_client_command_enabled" {
       command_output as o,
       linux_output as j
     where
-      os_conn = host_conn;
+      os.os_conn = h.host_conn;
   EOQ
 }
 
