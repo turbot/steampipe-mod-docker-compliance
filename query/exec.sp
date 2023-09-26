@@ -228,7 +228,7 @@ query "docker_socket_file_ownership_set_to_root" {
     where
       os.os_conn = h.host_conn
       and h.host_conn = o.conn
-      and h.host_con = l.conn,
+      and h.host_conn = l.conn;
   EOQ
 }
 
