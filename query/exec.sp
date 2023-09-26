@@ -177,7 +177,7 @@ query "docker_daemon_auditing_configured" {
       linux_output as o
     where
       os.os_conn = h.host_conn
-      and os.os_conn = o.conn
+      and os.os_conn = o.conn;
   EOQ
 }
 
@@ -226,7 +226,9 @@ query "docker_socket_file_ownership_set_to_root" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_con = l.conn,
   EOQ
 }
 
@@ -261,7 +263,8 @@ query "etc_docker_directory_ownership_set_to_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -296,7 +299,8 @@ query "docker_files_and_directories_run_containerd_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -331,7 +335,8 @@ query "docker_files_and_directories_var_lib_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -366,7 +371,8 @@ query "docker_files_and_directories_etc_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -415,7 +421,9 @@ query "docker_files_and_directories_docker_service_auditing_configured" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = l.conn;
   EOQ
 }
 
@@ -464,7 +472,9 @@ query "docker_files_and_directories_containerd_sock_auditing_configured" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = l.conn;
   EOQ
 }
 
@@ -513,7 +523,9 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = l.conn;
   EOQ
 }
 
@@ -548,7 +560,8 @@ query "docker_files_and_directories_etc_default_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -583,7 +596,8 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -618,7 +632,8 @@ query "docker_files_and_directories_etc_containerd_config_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -653,7 +668,8 @@ query "docker_files_and_directories_etc_sysconfig_docker_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -688,7 +704,8 @@ query "docker_files_and_directories_usr_bin_containerd_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -723,7 +740,8 @@ query "docker_files_and_directories_usr_bin_containerd_shim_auditing_configured"
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -758,7 +776,8 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v1_auditing_con
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -793,7 +812,8 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v2_auditing_con
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -828,7 +848,8 @@ query "docker_files_and_directories_usr_bin_runc_auditing_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -894,7 +915,8 @@ query "docker_containerd_socket_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -929,7 +951,8 @@ query "docker_containerd_socket_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -964,7 +987,8 @@ query "etc_sysconfig_docker_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1000,7 +1024,8 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1049,7 +1074,9 @@ query "docker_service_file_ownership_root_root" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = l.conn
   EOQ
 }
 
@@ -1097,7 +1124,9 @@ query "docker_service_file_restrictive_permission" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = l.conn;
   EOQ
 }
 
@@ -1145,7 +1174,9 @@ query "docker_socket_file_restrictive_permission" {
       linux_output as o,
       linux_file_location as l
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = l.conn;
   EOQ
 }
 
@@ -1181,7 +1212,8 @@ query "etc_docker_directory_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1230,7 +1262,8 @@ query "tls_ca_certificate_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1279,7 +1312,8 @@ query "tls_ca_certificate_permission_444" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1328,7 +1362,8 @@ query "docker_server_certificate_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1377,7 +1412,8 @@ query "docker_server_certificate_permission_444" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1426,7 +1462,8 @@ query "docker_server_certificate_key_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1475,7 +1512,8 @@ query "docker_server_certificate_key_permission_400" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1525,7 +1563,8 @@ query "docker_socket_file_ownership_root_docker" {
       os_output as os,
       command_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1576,7 +1615,8 @@ query "docker_sock_file_restrictive_permission" {
       os_output as os,
       command_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1613,7 +1653,8 @@ query "daemon_json_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1649,7 +1690,8 @@ query "daemon_json_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1686,7 +1728,8 @@ query "etc_default_docker_file_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1722,7 +1765,8 @@ query "etc_default_docker_file_restrictive_permission" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1757,7 +1801,8 @@ query "docker_exec_command_no_privilege_option" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1792,7 +1837,8 @@ query "docker_exec_command_no_user_root_option" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1827,7 +1873,8 @@ query "registry_certificate_ownership_root_root" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1863,7 +1910,8 @@ query "registry_certificate_file_permissions_444" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn;
   EOQ
 }
 
@@ -1938,7 +1986,8 @@ query "tls_authentication_docker_daemon_configured" {
       os_output as os,
       linux_output as o
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
   EOQ
 }
 
@@ -1984,7 +2033,9 @@ query "default_ulimit_configured" {
       command_output as o,
       linux_output as j
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = j.conn;
   EOQ
 }
 
@@ -2030,7 +2081,9 @@ query "base_device_size_changed" {
       command_output as o,
       linux_output as j
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = j.conn;
   EOQ
 }
 
@@ -2076,7 +2129,9 @@ query "authorization_docker_client_command_enabled" {
       command_output as o,
       linux_output as j
     where
-      os.os_conn = h.host_conn;
+      os.os_conn = h.host_conn
+      and h.host_conn = o.conn
+      and h.host_conn = j.conn
   EOQ
 }
 
@@ -2121,7 +2176,8 @@ query "swarm_services_bound_to_specific_host_interface" {
       command_output as o,
       json_output as j
     where
-      host_conn = o.conn;
+      h.host_conn = o.conn
+      and o.conn = j.conn;
   EOQ
 }
 
@@ -2181,7 +2237,7 @@ query "userland_proxy_disabled" {
       hostname as h,
       command_output as o
     where
-      host_conn = o.conn;
+      h.host_conn = o.conn;
   EOQ
 }
 

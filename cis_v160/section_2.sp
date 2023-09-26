@@ -90,7 +90,7 @@ control "cis_v160_2_3" {
 }
 
 control "cis_v160_2_4" {
-  title         = "2.3 Ensure Docker is allowed to make changes to iptables '"
+  title         = "2.3 Ensure Docker is allowed to make changes to iptables'"
   description   = "The iptables firewall is used to set up, maintain, and inspect the tables of IP packet filter rules within the Linux kernel. The Docker daemon should be allowed to make changes to the iptables ruleset."
   query         = query.docker_iptables_not_set
   documentation = file("./cis_v160/docs/cis_v160_2_3.md")
