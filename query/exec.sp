@@ -1191,7 +1191,7 @@ query "tls_ca_certificate_ownership_root_root" {
     linux_output as (
       with json_value_cte as (
         select
-          'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscacert') || ' | grep -v root:root' as key_value,
+          case when stdout_output = '' then 'no file' else 'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscacert') || ' | grep -v root:root' end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1240,7 +1240,7 @@ query "tls_ca_certificate_permission_444" {
     linux_output as (
       with json_value_cte as (
         select
-          'stat -c %a ' || (stdout_output::jsonb->>'tlscacert') as key_value,
+          case when stdout_output = '' then 'no file' else 'stat -c %a ' || (stdout_output::jsonb->>'tlscacert') end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1289,7 +1289,7 @@ query "docker_server_certificate_ownership_root_root" {
     linux_output as (
       with json_value_cte as (
         select
-          'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscert') || ' | grep -v root:root' as key_value,
+          case when stdout_output = '' then 'no file' else 'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscert') || ' | grep -v root:root' end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1338,7 +1338,7 @@ query "docker_server_certificate_permission_444" {
     linux_output as (
       with json_value_cte as (
         select
-          'stat -c %a ' || (stdout_output::jsonb->>'tlscert') as key_value,
+          case when stdout_output = '' then 'no file' else 'stat -c %a ' || (stdout_output::jsonb->>'tlscert') end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1387,7 +1387,7 @@ query "docker_server_certificate_key_ownership_root_root" {
     linux_output as (
       with json_value_cte as (
         select
-          'stat -c %U:%G ' || (stdout_output::jsonb->>'tlskey') || ' | grep -v root:root' as key_value,
+          case when stdout_output = '' then 'no file' else  'stat -c %U:%G ' || (stdout_output::jsonb->>'tlskey') || ' | grep -v root:root' end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1436,7 +1436,7 @@ query "docker_server_certificate_key_permission_400" {
     linux_output as (
       with json_value_cte as (
         select
-          'stat -c %a ' || (stdout_output::jsonb->>'tlskey') as key_value,
+          case when stdout_output = '' then 'no file' else 'stat -c %a ' || (stdout_output::jsonb->>'tlskey') end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
