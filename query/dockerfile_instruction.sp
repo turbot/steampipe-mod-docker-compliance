@@ -20,11 +20,12 @@ query "container_non_root_user" {
         when o.stdout_output like '%0%' then host || ' container process is running as root user.'
         else host || ' container process is not running as root user.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      host_conn = o.conn;
+      h.host_conn = o.conn;
   EOQ
 }
 

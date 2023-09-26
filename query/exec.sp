@@ -11,7 +11,8 @@ locals {
     ), hostname as (
       select
         btrim(stdout_output, E' \n\r\t') as host,
-         _ctx ->> 'connection_name' as host_conn
+        _ctx ->> 'connection_name' as host_conn,
+        _ctx
       from
         exec_command
       where
@@ -25,7 +26,8 @@ locals {
     with hostname as (
       select
         btrim(stdout_output, E' \n\r\t') as host,
-         _ctx ->> 'connection_name' as host_conn
+        _ctx ->> 'connection_name' as host_conn,
+        _ctx
       from
         exec_command
       where
@@ -75,11 +77,12 @@ query "separate_partition_for_containers_created" {
         when o.stdout_output = '' or o.stdout_output like '%not a mountpoint%' then host || ' configured Docker root directory is not a mount point.'
         else host || ' configured Docker root directory is a mount point.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       linux_output as o
     where
-      conn = host_conn;
+      o.conn = h.host_conn;
   EOQ
 }
 
@@ -105,11 +108,12 @@ query "docker_daemon_run_as_root_user" {
         when o.stdout_output like '%root%' then host || ' Docker daemon is running as root user.'
         else host || ' Docker daemon is not running as root user.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      o.conn = host_conn;
+      o.conn = h.host_conn;
   EOQ
 }
 
@@ -137,11 +141,12 @@ query "logging_level_set_to_info" {
         or o.stdout_output not like '%--log-level%' then host || ' logging level is not set or set to info.'
         else host || ' logging level is not set to info.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      o.conn = host_conn;
+      o.conn = h.host_conn;
   EOQ
 }
 
@@ -171,6 +176,7 @@ query "docker_daemon_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker daemon auditing is not configured.'
         else host || ' Docker daemon auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -220,6 +226,7 @@ query "docker_socket_file_ownership_set_to_root" {
         when o.stdout_output = '' then host || ' file ownership is set to root:root.'
         else host || ' Docker daemon auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -258,6 +265,7 @@ query "etc_docker_directory_ownership_set_to_root" {
         when o.stdout_output = '' then host || ' /etc/docker directory ownership is set to root:root.'
         else host || ' /etc/docker directory ownership is not set to root:root.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -294,6 +302,7 @@ query "docker_files_and_directories_run_containerd_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/run/containerd" auditing is not configured.'
         else host || ' Docker files and directories "/run/containerd" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -330,6 +339,7 @@ query "docker_files_and_directories_var_lib_docker_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/var/lib/docker" auditing is not configured.'
         else host || ' Docker files and directories "/var/lib/docker" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -366,6 +376,7 @@ query "docker_files_and_directories_etc_docker_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/etc/docker" auditing is not configured.'
         else host || ' Docker files and directories "/etc/docker" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -415,6 +426,7 @@ query "docker_files_and_directories_docker_service_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "docker.service" auditing is not configured.'
         else host || ' Docker files and directories "docker.service" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -466,6 +478,7 @@ query "docker_files_and_directories_containerd_sock_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "containerd.sock" auditing is not configured.'
         else host || ' Docker files and directories "containerd.sock" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -517,6 +530,7 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "docker.socket" auditing is not configured.'
         else host || ' Docker files and directories "docker.socket" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -555,6 +569,7 @@ query "docker_files_and_directories_etc_default_docker_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/etc/default/docker" auditing is not configured.'
         else host || ' Docker files and directories "/etc/default/docker" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -591,6 +606,7 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/etc/docker/daemon.json" auditing is not configured.'
         else host || ' Docker files and directories "/etc/docker/daemon.json" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -627,6 +643,7 @@ query "docker_files_and_directories_etc_containerd_config_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/etc/containerd/config.toml" auditing is not configured.'
         else host || ' Docker files and directories "/etc/containerd/config.toml" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -663,6 +680,7 @@ query "docker_files_and_directories_etc_sysconfig_docker_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/etc/sysconfig/docker" auditing is not configured.'
         else host || ' Docker files and directories "/etc/sysconfig/docker" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -699,6 +717,7 @@ query "docker_files_and_directories_usr_bin_containerd_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd" auditing is not configured.'
         else host || ' Docker files and directories "/usr/bin/containerd" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -735,6 +754,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_auditing_configured"
         when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd-shim" auditing is not configured.'
         else host || ' Docker files and directories "/usr/bin/containerd-shim" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -771,6 +791,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v1_auditing_con
         when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v1" auditing is not configured.'
         else host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v1" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -807,6 +828,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v2_auditing_con
         when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v2" auditing is not configured.'
         else host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v2" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -843,6 +865,7 @@ query "docker_files_and_directories_usr_bin_runc_auditing_configured" {
         when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/runc" auditing is not configured.'
         else host || ' Docker files and directories "/usr/bin/runc" auditing is configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -875,11 +898,12 @@ query "docker_container_trust_enabled" {
         when o.stdout_output like '%1%' then host || ' Docker container trust enabled.'
         else host || ' Docker container trust disabled.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      host_conn = o.conn;
+      h.host_conn = o.conn;
   EOQ
 }
 
@@ -908,8 +932,9 @@ query "docker_containerd_socket_file_restrictive_permission" {
       case
         when os.os ilike '%Darwin%' then host || ' /run/containerd/containerd.sock does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
-        else host || ' containerd socket file permission set to ' || o.stdout_output || '.'
+        else host || ' containerd socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
         end as reason
+        ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -946,6 +971,7 @@ query "docker_containerd_socket_file_ownership_root_root" {
         when o.stdout_output = '' then host || ' containerd socket file is owned by root and group owned by root.'
         else host || ' containerd socket file is not owned by root.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -982,6 +1008,7 @@ query "etc_sysconfig_docker_file_ownership_root_root" {
         when o.stdout_output = '' then host || ' /etc/sysconfig/docker file ownership is set to root:root.'
         else host || ' /etc/sysconfig/docker file ownership is not set to root:root'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1017,8 +1044,9 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/sysconfig/docker does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
-        else host || ' containerd socket file permission set to ' || o.stdout_output || '.'
+        else host || ' containerd socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1068,6 +1096,7 @@ query "docker_service_file_ownership_root_root" {
         when o.stdout_output = '' then host || ' docker.service file ownership is set to root:root.'
         else host || ' docker.service file ownership is not set to root:root.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1116,8 +1145,9 @@ query "docker_service_file_restrictive_permission" {
       case
         when os.os ilike '%Darwin%' then host || ' docker.service does not exist on ' || os.os || ' OS.'
         when l.stdout_output = '' then host || ' recommendation is not applicable as the file is unavailable.'
-        else  host || ' docker.service file permission set to ' || o.stdout_output || '.'
+        else  host || ' docker.service file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1166,8 +1196,9 @@ query "docker_socket_file_restrictive_permission" {
       case
         when os.os ilike '%Darwin%' then host || ' docker.socket does not exist on ' || os.os || ' OS.'
         when l.stdout_output = '' then host || ' recommendation is not applicable as the file is unavailable.'
-        else  host || ' docker.socket file permission set to ' || o.stdout_output || '.'
+        else  host || ' docker.socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1206,7 +1237,8 @@ query "etc_docker_directory_restrictive_permission" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' /etc/docker directory permission set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1256,7 +1288,8 @@ query "tls_ca_certificate_ownership_root_root" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '' then host || ' TLS CA certificate file ownership is set to root:root.'
         else host || ' TLS CA certificate file ownership is set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1306,7 +1339,8 @@ query "tls_ca_certificate_permission_444" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%444%' then host || ' TLS CA certificate file permissions are set to 444.'
         else host || ' TLS CA certificate file permissions are set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1356,7 +1390,8 @@ query "docker_server_certificate_ownership_root_root" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '' then host || ' server certificate file ownership is set to root:root.'
         else host || ' server certificate file ownership is set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1406,7 +1441,8 @@ query "docker_server_certificate_permission_444" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%444%' then host || ' server certificate file permissions are set to 444.'
         else host || ' server certificate file permissions are set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1456,7 +1492,8 @@ query "docker_server_certificate_key_ownership_root_root" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '' then host || ' server certificate key file ownership is set to root:root.'
         else host || ' server certificate key file ownership is set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1506,7 +1543,8 @@ query "docker_server_certificate_key_permission_400" {
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%400%' then host || ' server certificate key file permissions are set to 400.'
         else host || ' server certificate key file permissions are set to ' || o.stdout_output || '.'
-        end as reason
+      end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1558,6 +1596,7 @@ query "docker_socket_file_ownership_root_docker" {
         when o.stdout_output = '' then host || ' Docker socket file ownership is set to root:docker.'
         else host || ' Docker socket file ownership is not set to root:docker.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1608,8 +1647,9 @@ query "docker_sock_file_restrictive_permission" {
       end as status,
       case
         when o.stdout_output like host || '%No such file or directory%' then ' recommendation is not applicable as the file is unavailable.'
-        else host || ' docker.socket file permission set to ' || o.stdout_output || '.'
+        else host || ' docker.socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1648,6 +1688,7 @@ query "daemon_json_file_ownership_root_root" {
         when o.stdout_output = '' then host || ' daemon.json file ownership is set to root:root.'
         else host || ' Docker socket file ownership is not set to root:root.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1683,8 +1724,9 @@ query "daemon_json_file_restrictive_permission" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
-        else host || ' daemon.json file permission set to ' || o.stdout_output || '.'
+        else host || ' daemon.json file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1723,6 +1765,7 @@ query "etc_default_docker_file_ownership_root_root" {
         when o.stdout_output = '' then host || ' /etc/default/docker file ownership is set to root:root.'
         else host || ' /etc/default/docker file ownership is not set to root:root.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1758,8 +1801,9 @@ query "etc_default_docker_file_restrictive_permission" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/default/docker does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
-        else host || ' /etc/default/docker file permission set to ' || o.stdout_output || '.'
+        else host || ' /etc/default/docker file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1796,6 +1840,7 @@ query "docker_exec_command_no_privilege_option" {
         when o.stdout_output like '' then host || ' Docker exec commands are not used with the privileged option.'
         else host || ' Docker exec commands are used with the privileged option.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1832,6 +1877,7 @@ query "docker_exec_command_no_user_root_option" {
         when o.stdout_output like '' then host || ' Docker exec commands are not used with the user=root option'
         else host || ' Docker exec commands are used with the user=root option.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1868,6 +1914,7 @@ query "registry_certificate_ownership_root_root" {
         when o.stdout_output = '' then host || ' registry certificate file ownership is set to root:root.'
         else host || ' registry certificate file ownership is not set to root:root.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1905,6 +1952,7 @@ query "registry_certificate_file_permissions_444" {
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' registry certificate file permissions set to ' || o.stdout_output || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -1939,11 +1987,12 @@ query "docker_iptables_not_set" {
         when o.stdout_output not like '%--iptables%' then host || ' iptables not set.'
         else host || ' iptables are set to true.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      o.conn = host_conn;
+      o.conn = h.host_conn;
   EOQ
 }
 
@@ -1981,6 +2030,7 @@ query "tls_authentication_docker_daemon_configured" {
           and o.stdout_output::jsonb->>'tlskey' <> '' then host || ' TLS authentication for Docker daemon is configured.'
         else host || ' TLS authentication for Docker daemon is not configured.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -2027,6 +2077,7 @@ query "default_ulimit_configured" {
         when o.stdout_output like '%--default-ulimit%' or j.stdout_output::jsonb ->> 'default-ulimit' <> '' then host || ' Default ulimit is set.'
         else host || ' Default ulimit is not set.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -2075,6 +2126,7 @@ query "base_device_size_changed" {
         when o.stdout_output not like '%--storage-opt dm.basesize%' or j.stdout_output::jsonb ->> 'storage-opts' not like '%dm.basesize%' then host || ' Default base device size is set.'
         else host || ' Base device size is changed.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -2123,6 +2175,7 @@ query "authorization_docker_client_command_enabled" {
         when o.stdout_output like '%--authorization-plugin%' or j.stdout_output::jsonb -> 'authorization-plugins' is not null then host || ' authorization for Docker client commands is enabled.'
         else host || ' authorization for Docker client commands is disabled.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       os_output as os,
@@ -2171,6 +2224,7 @@ query "swarm_services_bound_to_specific_host_interface" {
         when j.stdout_output <> '' then host || ' swarm services are bound to a specific host interface.'
         else host || ' swarm services are not bound to a specific host interface.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o,
@@ -2203,11 +2257,12 @@ query "docker_socket_not_mounted_inside_containers" {
         when o.stdout_output = '' then host || ' Docker socket is not mounted inside any containers.'
         else host || ' Docker socket is mounted inside ' || o.stdout_output || '.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      host_conn = o.conn;
+      h.host_conn = o.conn;
   EOQ
 }
 
@@ -2233,6 +2288,7 @@ query "userland_proxy_disabled" {
         when o.stdout_output like '%--userland-proxy=false%' then host || ' userland proxy is Disabled.'
         else host || ' userland proxy is enabled.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
@@ -2265,10 +2321,11 @@ query "containers_no_new_privilege_disabled" {
         when o.stdout_output not like '%--no-new-privileges%' then host || ' no new privileges not set.'
         else host || ' no new privilege is enabled.'
       end as reason
+      ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
       hostname as h,
       command_output as o
     where
-      host_conn = o.conn;
+      h.host_conn = o.conn;
   EOQ
 }
