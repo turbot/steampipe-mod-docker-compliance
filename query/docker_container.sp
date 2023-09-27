@@ -100,6 +100,7 @@ query "docker_container_root_filesystem_mounted" {
         when inspect -> 'HostConfig' ->> 'ReadonlyRootfs' = 'false' then (names ->> 0) || ' root filesystem is not mounted as read only.'
         else (names ->> 0) || ' root filesystem is mounted as read only.'
       end as reason
+      ${local.common_dimensions_sql}
     from
       docker_container;
   EOQ
