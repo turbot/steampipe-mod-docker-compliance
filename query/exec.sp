@@ -48,6 +48,7 @@ query "exec_separate_partition_for_containers_created" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
+        and os_output.os = 'Linux'
         and command = E'mountpoint -- "$(docker info -f \'{{ .DockerRootDir }}\')"'
     ),
     darwin_output as (
@@ -1620,6 +1621,7 @@ query "docker_sock_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
+        and os_output.os = 'Linux'
         and command = 'stat -c %a /var/run/docker.sock'
     ),
     darwin_output as (
