@@ -162,7 +162,7 @@ query "docker_daemon_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/dockerd)'
+        and command = 'sudo -n auditctl -l | grep /usr/bin/dockerd'
     )
     select
       host as resource,
@@ -199,7 +199,7 @@ query "docker_socket_file_ownership_set_to_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G /usr/lib/systemd/system/docker.socket | grep -v root:root)'
+        and command = 'stat -c %U:%G /usr/lib/systemd/system/docker.socket | grep -v root:root'
     ),
     linux_file_location as (
       select
@@ -251,7 +251,7 @@ query "etc_docker_directory_ownership_set_to_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G /etc/docker | grep -v root:root)'
+        and command = 'stat -c %U:%G /etc/docker | grep -v root:root'
     )
     select
       host as resource,
@@ -288,7 +288,7 @@ query "docker_files_and_directories_run_containerd_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /run/containerd)'
+        and command = 'sudo -n auditctl -l | grep /run/containerd'
     )
     select
       host as resource,
@@ -325,7 +325,7 @@ query "docker_files_and_directories_var_lib_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /var/lib/docker)'
+        and command = 'sudo -n auditctl -l | grep /var/lib/docker'
     )
     select
       host as resource,
@@ -362,7 +362,7 @@ query "docker_files_and_directories_etc_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /etc/docker)'
+        and command = 'sudo -n auditctl -l | grep /etc/docker'
     )
     select
       host as resource,
@@ -399,7 +399,7 @@ query "docker_files_and_directories_docker_service_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep docker.service)'
+        and command = 'sudo -n auditctl -l | grep docker.service'
     ),
     linux_file_location as (
       select
@@ -451,7 +451,7 @@ query "docker_files_and_directories_containerd_sock_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep containerd.sock)'
+        and command = 'sudo -n auditctl -l | grep containerd.sock'
     ),
     linux_file_location as (
       select
@@ -503,7 +503,7 @@ query "docker_files_and_directories_docker_socket_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep docker.socket)'
+        and command = 'sudo -n auditctl -l | grep docker.socket'
     ),
     linux_file_location as (
       select
@@ -555,7 +555,7 @@ query "docker_files_and_directories_etc_default_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /etc/default/docker)'
+        and command = 'sudo -n auditctl -l | grep /etc/default/docker'
     )
     select
       host as resource,
@@ -592,7 +592,7 @@ query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /etc/docker/daemon.json)'
+        and command = 'sudo -n auditctl -l | grep /etc/docker/daemon.json'
     )
     select
       host as resource,
@@ -629,7 +629,7 @@ query "docker_files_and_directories_etc_containerd_config_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /etc/containerd/config.toml)'
+        and command = 'sudo -n auditctl -l | grep /etc/containerd/config.toml'
     )
     select
       host as resource,
@@ -666,7 +666,7 @@ query "docker_files_and_directories_etc_sysconfig_docker_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /etc/sysconfig/docker)'
+        and command = 'sudo -n auditctl -l | grep /etc/sysconfig/docker'
     )
     select
       host as resource,
@@ -703,7 +703,7 @@ query "docker_files_and_directories_usr_bin_containerd_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd)'
+        and command = 'sudo -n auditctl -l | grep /usr/bin/containerd'
     )
     select
       host as resource,
@@ -740,7 +740,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_auditing_configured"
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd-shim)'
+        and command = 'sudo -n auditctl -l | grep /usr/bin/containerd-shim'
     )
     select
       host as resource,
@@ -777,7 +777,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v1_auditing_con
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd-shim-runc-v1)'
+        and command = 'sudo -n auditctl -l | grep /usr/bin/containerd-shim-runc-v1'
     )
     select
       host as resource,
@@ -814,7 +814,7 @@ query "docker_files_and_directories_usr_bin_containerd_shim_runc_v2_auditing_con
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/containerd-shim-runc-v2)'
+        and command = 'sudo -n auditctl -l | grep /usr/bin/containerd-shim-runc-v2'
     )
     select
       host as resource,
@@ -851,7 +851,7 @@ query "docker_files_and_directories_usr_bin_runc_auditing_configured" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(sudo -n auditctl -l | grep /usr/bin/runc)'
+        and command = 'sudo -n auditctl -l | grep /usr/bin/runc'
     )
     select
       host as resource,
@@ -957,7 +957,7 @@ query "docker_containerd_socket_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G /run/containerd/containerd.sock | grep -v root:root)'
+        and command = 'stat -c %U:%G /run/containerd/containerd.sock | grep -v root:root'
     )
     select
       host as resource,
@@ -994,7 +994,7 @@ query "etc_sysconfig_docker_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G /etc/sysconfig/docker | grep -v root:root)'
+        and command = 'stat -c %U:%G /etc/sysconfig/docker | grep -v root:root'
     )
     select
       host as resource,
@@ -1031,7 +1031,7 @@ query "etc_sysconfig_docker_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %a /etc/sysconfig/docker)'
+        and command = 'stat -c %a /etc/sysconfig/docker'
     )
     select
       host as resource,
@@ -1069,7 +1069,7 @@ query "docker_service_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G "$(systemctl show -p FragmentPath docker.service | awk -F''='' ''{print $2}'')" | grep -v root:root)'
+        and command = 'stat -c %U:%G "$(systemctl show -p FragmentPath docker.service | awk -F''='' ''{print $2}'')" | grep -v root:root'
     ),
     linux_file_location as (
       select
@@ -1121,7 +1121,7 @@ query "docker_service_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %a "$(systemctl show -p FragmentPath docker.service | awk -F''='' ''{print $2}'')")'
+        and command = 'stat -c %a "$(systemctl show -p FragmentPath docker.service | awk -F''='' ''{print $2}'')"'
     ),
     linux_file_location as (
       select
@@ -1172,7 +1172,7 @@ query "docker_socket_file_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %a "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')")'
+        and command = 'stat -c %a "$(systemctl show -p FragmentPath docker.socket | awk -F''='' ''{print $2}'')"'
     ),
     linux_file_location as (
       select
@@ -1223,7 +1223,7 @@ query "etc_docker_directory_restrictive_permission" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %a /etc/docker)'
+        and command = 'stat -c %a /etc/docker'
     )
     select
       host as resource,
@@ -1672,7 +1672,7 @@ query "daemon_json_file_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G /etc/docker/daemon.json | grep -v root:root)'
+        and command = 'stat -c %U:%G /etc/docker/daemon.json | grep -v root:root'
     )
     select
       host as resource,
@@ -1900,7 +1900,7 @@ query "registry_certificate_ownership_root_root" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
-        and command = 'echo $(stat -c %U:%G /etc/docker/certs.d/* | grep -v root:root)'
+        and command = 'stat -c %U:%G /etc/docker/certs.d/* | grep -v root:root'
     )
     select
       host as resource,
@@ -2245,7 +2245,7 @@ query "docker_socket_not_mounted_inside_containers" {
       from
         exec_command
       where
-        command = 'echo $(docker ps --quiet --all | xargs docker inspect --format ''{{ .Id }}: Volumes={{ .Mounts }}'' | grep docker.sock)'
+        command = 'docker ps --quiet --all | xargs docker inspect --format ''{{ .Id }}: Volumes={{ .Mounts }}'' | grep docker.sock'
     )
     select
       host as resource,
