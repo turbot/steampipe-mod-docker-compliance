@@ -1567,6 +1567,7 @@ query "docker_socket_file_ownership_root_docker" {
         os_output
       where
         os_conn = _ctx ->> 'connection_name'
+        and os_output.os = 'Linux'
         and command = 'stat -c %U:%G /var/run/docker.sock | grep -v root:docker'
     ),
     darwin_output as (
@@ -1589,11 +1590,11 @@ query "docker_socket_file_ownership_root_docker" {
     select
       host as resource,
       case
-        when o.stdout_output = '' then 'ok'
+        when o.stdout_output = '' or o.stdout_output ~ '^\r\n$' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.stdout_output = '' then host || ' Docker socket file ownership is set to root:docker.'
+        when o.stdout_output = '' or o.stdout_output ~ '^\r\n$' then host || ' Docker socket file ownership is set to root:docker.'
         else host || ' Docker socket file ownership is not set to root:docker.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
