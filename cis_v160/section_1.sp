@@ -61,7 +61,7 @@ benchmark "cis_v160_1_1" {
 control "cis_v160_1_1_1" {
   title         = "1.1.1 Ensure a separate partition for containers has been created"
   description   = "All Docker containers and their data and metadata is stored under /var/lib/docker directory. By default, /var/lib/docker should be mounted under either the / or /var partitions dependent on how the Linux operating system in use is configured."
-  query         = query.separate_partition_for_containers_created
+  query         = query.exec_separate_partition_for_containers_created
   documentation = file("./cis_v160/docs/cis_v160_1_1_1.md")
 
   tags = merge(local.cis_v160_1_common_tags, {
@@ -75,7 +75,7 @@ control "cis_v160_1_1_1" {
 control "cis_v160_1_1_3" {
   title         = "1.1.3 Ensure auditing is configured for the Docker daemon"
   description   = "Audit all Docker daemon activities."
-  query         = query.docker_daemon_auditing_configured
+  query         = query.exec_docker_daemon_auditing_configured
   documentation = file("./cis_v160/docs/cis_v160_1_1_3.md")
 
   tags = merge(local.cis_v160_1_common_tags, {
@@ -187,7 +187,7 @@ control "cis_v160_1_1_10" {
 control "cis_v160_1_1_11" {
   title         = "1.1.11 Ensure auditing is configured for Docker files and directories - /etc/docker/daemon.json"
   description   = "Audit /etc/docker/daemon.json, if applicable."
-  query         = query.docker_files_and_directories_etc_docker_daemon_auditing_configured
+  query         = query.docker_files_and_directories_etc_exec_docker_daemon_auditing_configured
   documentation = file("./cis_v160/docs/cis_v160_1_1_11.md")
 
   tags = merge(local.cis_v160_1_common_tags, {

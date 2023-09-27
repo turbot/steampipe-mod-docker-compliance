@@ -1,4 +1,4 @@
-query "swarm_mode_enabled" {
+query "docker_swarm_mode_enabled" {
   sql = <<-EOQ
     select
       id as resource,

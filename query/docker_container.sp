@@ -1,4 +1,4 @@
-query "container_healthcheck_instruction" {
+query "docker_container_healthcheck_instruction" {
   sql = <<-EOQ
     select
       id as resource,
@@ -16,7 +16,7 @@ query "container_healthcheck_instruction" {
   EOQ
 }
 
-query "container_apparmor_profile_enabled" {
+query "docker_container_apparmor_profile_enabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -34,7 +34,7 @@ query "container_apparmor_profile_enabled" {
   EOQ
 }
 
-query "container_host_network_namespace_shared" {
+query "docker_container_host_network_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -52,7 +52,7 @@ query "container_host_network_namespace_shared" {
   EOQ
 }
 
-query "container_memory_usage_limit" {
+query "docker_container_memory_usage_limit" {
   sql = <<-EOQ
     select
       id as resource,
@@ -70,7 +70,7 @@ query "container_memory_usage_limit" {
   EOQ
 }
 
-query "container_cpu_priority_set" {
+query "docker_container_cpu_priority_set" {
   sql = <<-EOQ
     select
       id as resource,
@@ -88,7 +88,7 @@ query "container_cpu_priority_set" {
   EOQ
 }
 
-query "container_root_filesystem_mounted" {
+query "docker_container_root_filesystem_mounted" {
   sql = <<-EOQ
     select
       id as resource,
@@ -105,7 +105,7 @@ query "container_root_filesystem_mounted" {
   EOQ
 }
 
-query "container_restart_policy_on_failure" {
+query "docker_container_restart_policy_on_failure" {
   sql = <<-EOQ
     select
       id as resource,
@@ -124,7 +124,7 @@ query "container_restart_policy_on_failure" {
   EOQ
 }
 
-query "container_host_process_namespace_shared" {
+query "docker_container_host_process_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -142,7 +142,7 @@ query "container_host_process_namespace_shared" {
   EOQ
 }
 
-query "container_host_ipc_namespace_shared" {
+query "docker_container_host_ipc_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -160,7 +160,7 @@ query "container_host_ipc_namespace_shared" {
   EOQ
 }
 
-query "host_devices_exposed_to_containers" {
+query "docker_host_devices_exposed_to_containers" {
   sql = <<-EOQ
     select
       id as resource,
@@ -180,7 +180,7 @@ query "host_devices_exposed_to_containers" {
   EOQ
 }
 
-query "container_default_ulimit" {
+query "docker_container_default_ulimit" {
   sql = <<-EOQ
     select
       id as resource,
@@ -198,7 +198,7 @@ query "container_default_ulimit" {
   EOQ
 }
 
-query "container_mount_propagation_mode_shared" {
+query "docker_container_mount_propagation_mode_shared" {
   sql = <<-EOQ
     select
       distinct c.id as resource,
@@ -222,7 +222,7 @@ query "container_mount_propagation_mode_shared" {
   EOQ
 }
 
-query "container_host_uts_namespace_shared" {
+query "docker_container_host_uts_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -240,7 +240,7 @@ query "container_host_uts_namespace_shared" {
   EOQ
 }
 
-query "container_default_seccomp_profile_disabled" {
+query "docker_container_default_seccomp_profile_disabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -258,7 +258,7 @@ query "container_default_seccomp_profile_disabled" {
   EOQ
 }
 
-query "container_cgroup_usage" {
+query "docker_container_cgroup_usage" {
   sql = <<-EOQ
     select
       id as resource,
@@ -276,7 +276,7 @@ query "container_cgroup_usage" {
   EOQ
 }
 
-query "container_no_new_privileges" {
+query "docker_container_no_new_privileges" {
   sql = <<-EOQ
     select
       id as resource,
@@ -294,7 +294,7 @@ query "container_no_new_privileges" {
   EOQ
 }
 
-query "container_pid_cgroup_limit_used" {
+query "docker_container_pid_cgroup_limit_used" {
   sql = <<-EOQ
     select
       id as resource,
@@ -312,7 +312,7 @@ query "container_pid_cgroup_limit_used" {
   EOQ
 }
 
-query "container_host_user_namespace_shared" {
+query "docker_container_host_user_namespace_shared" {
   sql = <<-EOQ
     select
       id as resource,
@@ -330,7 +330,7 @@ query "container_host_user_namespace_shared" {
   EOQ
 }
 
-query "privileged_containers" {
+query "docker_privileged_containers" {
   sql = <<-EOQ
     select
       id as resource,
@@ -348,7 +348,7 @@ query "privileged_containers" {
   EOQ
 }
 
-query "host_system_directories_mounted_on_containers" {
+query "docker_host_system_directories_mounted_on_containers" {
   sql = <<-EOQ
     select
       distinct c.id as resource,

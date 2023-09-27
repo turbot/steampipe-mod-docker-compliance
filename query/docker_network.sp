@@ -1,4 +1,4 @@
-query "network_traffic_restricted_between_containers" {
+query "docker_network_traffic_restricted_between_containers" {
   sql = <<-EOQ
     select
       id as resource,

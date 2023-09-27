@@ -1,4 +1,4 @@
-query "container_non_root_user" {
+query "docker_container_non_root_user" {
   sql = <<-EOQ
     ${local.hostname_sql}
      command_output as (

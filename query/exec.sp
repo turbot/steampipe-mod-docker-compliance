@@ -36,7 +36,7 @@ locals {
   EOQ
 }
 
-query "separate_partition_for_containers_created" {
+query "exec_separate_partition_for_containers_created" {
   sql = <<-EOQ
   ${local.os_hostname_sql}
     linux_output as (
@@ -86,7 +86,7 @@ query "separate_partition_for_containers_created" {
   EOQ
 }
 
-query "docker_daemon_run_as_root_user" {
+query "exec_docker_daemon_run_as_root_user" {
   sql = <<-EOQ
     ${local.hostname_sql}
      command_output as (
@@ -117,7 +117,7 @@ query "docker_daemon_run_as_root_user" {
   EOQ
 }
 
-query "logging_level_set_to_info" {
+query "exec_logging_level_set_to_info" {
   sql = <<-EOQ
     ${local.hostname_sql}
      command_output as (
@@ -150,7 +150,7 @@ query "logging_level_set_to_info" {
   EOQ
 }
 
-query "docker_daemon_auditing_configured" {
+query "exec_docker_daemon_auditing_configured" {
   sql = <<-EOQ
     ${local.os_hostname_sql}
      linux_output as (
@@ -187,7 +187,7 @@ query "docker_daemon_auditing_configured" {
   EOQ
 }
 
-query "docker_socket_file_ownership_set_to_root" {
+query "exec_docker_socket_file_ownership_set_to_root" {
   sql = <<-EOQ
     ${local.os_hostname_sql}
      linux_output as (
@@ -580,7 +580,7 @@ query "docker_files_and_directories_etc_default_docker_auditing_configured" {
   EOQ
 }
 
-query "docker_files_and_directories_etc_docker_daemon_auditing_configured" {
+query "docker_files_and_directories_etc_exec_docker_daemon_auditing_configured" {
   sql = <<-EOQ
     ${local.os_hostname_sql}
     linux_output as (

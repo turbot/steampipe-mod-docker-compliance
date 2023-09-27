@@ -36,7 +36,7 @@ benchmark "cis_v160_4" {
 control "cis_v160_4_1" {
   title         = "4.1 Ensure that a user for the container has been created"
   description   = "Containers should run as a non-root user."
-  query         = query.container_non_root_user
+  query         = query.docker_container_non_root_user
   documentation = file("./cis_v160/docs/cis_v160_4_1.md")
 
   tags = merge(local.cis_v160_4_common_tags, {
@@ -64,7 +64,7 @@ control "cis_v160_4_5" {
 control "cis_v160_4_6" {
   title         = "4.6 Ensure that HEALTHCHECK instructions have been added to container images"
   description   = "We should add the HEALTHCHECK instruction to your Docker container images in order to ensure that health checks are executed against running containers."
-  query         = query.container_healthcheck_instruction
+  query         = query.docker_container_healthcheck_instruction
   documentation = file("./cis_v160/docs/cis_v160_4_6.md")
 
   tags = merge(local.cis_v160_4_common_tags, {

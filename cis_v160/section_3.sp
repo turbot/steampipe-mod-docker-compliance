@@ -84,7 +84,7 @@ control "cis_v160_3_2" {
 control "cis_v160_3_3" {
   title         = "3.3 Ensure that docker.socket file ownership is set to root:root"
   description   = "You should verify that the docker.socket file ownership and group ownership are correctly set to root."
-  query         = query.docker_socket_file_ownership_set_to_root
+  query         = query.exec_docker_socket_file_ownership_set_to_root
   documentation = file("./cis_v160/docs/cis_v160_3_3.md")
 
   tags = merge(local.cis_v160_3_common_tags, {
