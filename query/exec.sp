@@ -1471,7 +1471,7 @@ query "exec_ownership_root_root_tls_ca_certificate" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '' then host || ' TLS CA certificate file ownership is set to root:root.'
-        else host || ' TLS CA certificate file ownership is set to ' || o.stdout_output || '.'
+        else host || ' TLS CA certificate file ownership is set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -1522,7 +1522,7 @@ query "exec_ownership_root_root_docker_server_certificate" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '' then host || ' server certificate file ownership is set to root:root.'
-        else host || ' server certificate file ownership is set to ' || o.stdout_output || '.'
+        else host || ' server certificate file ownership is set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -1573,7 +1573,7 @@ query "exec_ownership_root_root_docker_server_certificate_key" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '' then host || ' server certificate key file ownership is set to root:root.'
-        else host || ' server certificate key file ownership is set to ' || o.stdout_output || '.'
+        else host || ' server certificate key file ownership is set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -2268,7 +2268,7 @@ query "exec_docker_socket_not_mounted_inside_containers" {
       end as status,
       case
         when o.stdout_output = '' then host || ' Docker socket is not mounted inside any containers.'
-        else host || ' Docker socket is mounted inside ' || o.stdout_output || '.'
+        else host || ' Docker socket is mounted inside ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
