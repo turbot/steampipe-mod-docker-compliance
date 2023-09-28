@@ -56,9 +56,11 @@ connection "docker" {
   tls_verify  = true
 }
 ```
+
 **Note:**
-Docker over TLS should run on TCP port 2376.
-*api_version* is the Docker API version used on the remote server. You can check this by `docker version` command*
+
+- Docker over TLS should run on TCP port 2376.
+- *api_version* is the Docker API version used on the remote server. You can check this by `docker version` command*
 
 `exec.spc`
 ```
@@ -77,10 +79,10 @@ connection "exec" {
 ```
 connection "docker" {
   plugin = "docker"
-  host        = "tcp://12.345.67.890:2375"
+  host   = "tcp://12.345.67.890:2375"
 }
 ```
-WARNING: If docker configured unencrypted, API is accessible on http://0.0.0.0:2375 without encryption. Access to the remote API is equivalent to root access on the host. Refe to the 'Docker daemon attack surface' section in the documentation for more [information](https://docs.docker.com/go/attack-surface/)
+WARNING: If docker configured unencrypted, API is accessible on http://0.0.0.0:2375 without encryption. Access to the remote API is equivalent to root access on the host. Refer to the `Docker daemon attack surface section` in the documentation for more [information](https://docs.docker.com/go/attack-surface/)
 
 `exec.spc`
 ```
@@ -98,8 +100,7 @@ connection "exec" {
 You can leverage [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace) feature of Steampipe to control the Docker compliance execution. You choose to group respective connection info and execute benchmark or controls with [Workspace Arguments](https://steampipe.io/docs/reference/config-files/workspace#workspace-arguments). Simple example `workspace.spc` provided as below
 
 ```
-## Docker Compliance
-# The following connection must be available in respective config files i.e. docker.spc & exec.spc
+# The following connection mentioned in `search_path_prefix` must be available in respective config files i.e. docker.spc & exec.spc
 
 # Running Docker compliance in local OS
 workspace "docker_cis_local" {
@@ -112,7 +113,7 @@ workspace "docker_cis_remote" {
 }
 ```
 
-**Executing with --workspace**
+**Executing using workspace**
 
 Run all benchmarks:
 
