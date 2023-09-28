@@ -281,7 +281,7 @@ control "cis_v160_5_22" {
 control "cis_v160_5_23" {
   title         = "5.23 Ensure that docker exec commands are not used with the privileged option"
   description   = "You should not use docker exec with the --privileged option."
-  query         = query.docker_exec_command_no_privilege_option
+  query         = query.exec_docker_exec_command_no_privilege_option
   documentation = file("./cis_v160/docs/cis_v160_5_23.md")
 
   tags = merge(local.cis_v160_5_common_tags, {

@@ -1770,7 +1770,7 @@ query "exec_ownership_root_root_registry_certificate" {
   EOQ
 }
 
-query "docker_exec_command_no_privilege_option" {
+query "exec_docker_exec_command_no_privilege_option" {
   sql = <<-EOQ
     ${local.os_hostname_sql}
     linux_output as (
