@@ -2233,18 +2233,15 @@ query "exec_swarm_services_bound_to_specific_host_interface" {
         else 'alarm'
       end as status,
       case
-        when o.stdout_output = '' then host || ' Swarm mode not enabled'
+        when o.stdout_output = '' then host || ' Swarm mode not enabled.'
         when j.stdout_output <> '' then host || ' swarm services are bound to a specific host interface.'
         else host || ' swarm services are not bound to a specific host interface.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
-      hostname as h,
-      command_output as o,
-      json_output as j
-    where
-      h.host_conn = o.conn
-      and o.conn = j.conn;
+      hostname as h
+      left join command_output as o on h.host_conn = o.conn
+      left join json_output as j on o.conn = j.conn;
   EOQ
 }
 
