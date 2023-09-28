@@ -16,7 +16,7 @@ query "docker_swarm_mode_enabled" {
   EOQ
 }
 
-query "container_sprawl_avoided" {
+query "docker_container_sprawl_avoided" {
   sql = <<-EOQ
     select
       id as resource,
@@ -34,7 +34,7 @@ query "container_sprawl_avoided" {
   EOQ
 }
 
-query "swarm_minimum_required_manager_nodes" {
+query "docker_swarm_minimum_required_manager_nodes" {
   sql = <<-EOQ
     select
       id as resource,
@@ -52,7 +52,7 @@ query "swarm_minimum_required_manager_nodes" {
   EOQ
 }
 
-query "swarm_manager_auto_lock_mode" {
+query "docker_swarm_manager_auto_lock_mode" {
   sql = <<-EOQ
     select
       id as resource,
@@ -70,7 +70,7 @@ query "swarm_manager_auto_lock_mode" {
   EOQ
 }
 
-query "swarm_node_cert_expiry_set" {
+query "docker_swarm_node_cert_expiry_set" {
   sql = <<-EOQ
     select
       id as resource,
@@ -88,7 +88,7 @@ query "swarm_node_cert_expiry_set" {
   EOQ
 }
 
-query "aufs_storage_driver_unused" {
+query "docker_aufs_storage_driver_unused" {
   sql = <<-EOQ
     select
       id as resource,
@@ -106,7 +106,7 @@ query "aufs_storage_driver_unused" {
   EOQ
 }
 
-query "insecure_registries_unused" {
+query "docker_insecure_registries_unused" {
   sql = <<-EOQ
     select
       id as resource,
@@ -126,7 +126,7 @@ query "insecure_registries_unused" {
   EOQ
 }
 
-query "user_namespace_support_enabled" {
+query "docker_user_namespace_support_enabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -152,7 +152,7 @@ query "user_namespace_support_enabled" {
   EOQ
 }
 
-query "centralized_and_remote_logging_configured" {
+query "docker_centralized_and_remote_logging_configured" {
   sql = <<-EOQ
     select
       id as resource,
@@ -170,7 +170,7 @@ query "centralized_and_remote_logging_configured" {
   EOQ
 }
 
-query "live_restore_enabled" {
+query "docker_live_restore_enabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -188,7 +188,7 @@ query "live_restore_enabled" {
   EOQ
 }
 
-query "custom_seccomp_profile_applied" {
+query "docker_custom_seccomp_profile_applied" {
   sql = <<-EOQ
     select
       id as resource,

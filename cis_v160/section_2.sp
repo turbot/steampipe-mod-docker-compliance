@@ -92,7 +92,7 @@ control "cis_v160_2_3" {
 control "cis_v160_2_4" {
   title         = "2.3 Ensure Docker is allowed to make changes to iptables'"
   description   = "The iptables firewall is used to set up, maintain, and inspect the tables of IP packet filter rules within the Linux kernel. The Docker daemon should be allowed to make changes to the iptables ruleset."
-  query         = query.docker_iptables_not_set
+  query         = query.exec_docker_iptables_not_set
   documentation = file("./cis_v160/docs/cis_v160_2_3.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -106,7 +106,7 @@ control "cis_v160_2_4" {
 control "cis_v160_2_5" {
   title         = "2.5 Ensure insecure registries are not used"
   description   = "Docker considers a private registry either secure or insecure. By default, registries are considered secure."
-  query         = query.insecure_registries_unused
+  query         = query.docker_insecure_registries_unused
   documentation = file("./cis_v160/docs/cis_v160_2_5.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -120,7 +120,7 @@ control "cis_v160_2_5" {
 control "cis_v160_2_6" {
   title         = "2.6 Ensure aufs storage driver is not used"
   description   = "Do not use aufs as the storage driver for your Docker instance."
-  query         = query.aufs_storage_driver_unused
+  query         = query.docker_aufs_storage_driver_unused
   documentation = file("./cis_v160/docs/cis_v160_2_6.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -134,7 +134,7 @@ control "cis_v160_2_6" {
 control "cis_v160_2_7" {
   title         = "2.7 Ensure TLS authentication for Docker daemon is configured"
   description   = "It is possible to make the Docker daemon available remotely over a TCP port. If this is required, you should ensure that TLS authentication is configured in order to restrict access to the Docker daemon via IP address and port."
-  query         = query.tls_authentication_docker_daemon_configured
+  query         = query.exec_tls_authentication_docker_daemon_configured
   documentation = file("./cis_v160/docs/cis_v160_2_7.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -148,7 +148,7 @@ control "cis_v160_2_7" {
 control "cis_v160_2_8" {
   title         = "2.8 Ensure the default ulimit is configured appropriately"
   description   = "Set the default ulimit options as appropriate in your environment."
-  query         = query.default_ulimit_configured
+  query         = query.exec_default_ulimit_configured
   documentation = file("./cis_v160/docs/cis_v160_2_8.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -162,7 +162,7 @@ control "cis_v160_2_8" {
 control "cis_v160_2_9" {
   title         = "2.9 Enable user namespace support"
   description   = "We should enable user namespace support in Docker daemon to utilize container user to host user re-mapping. This recommendation is beneficial where the containers you are using do not have an explicit container user defined in the container image. If the container images that you are using have a pre-defined non-root user, this recommendation may be skipped as this feature is still in its infancy, and might result in unpredictable issues or difficulty in configuration."
-  query         = query.user_namespace_support_enabled
+  query         = query.docker_user_namespace_support_enabled
   documentation = file("./cis_v160/docs/cis_v160_2_9.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -176,7 +176,7 @@ control "cis_v160_2_9" {
 control "cis_v160_2_11" {
   title         = "2.11 Ensure base device size is not changed until needed"
   description   = "Under certain circumstances, you might need containers larger than 10G. Where this applies you should carefully choose the base device size."
-  query         = query.base_device_size_changed
+  query         = query.exec_base_device_size_changed
   documentation = file("./cis_v160/docs/cis_v160_2_11.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -190,7 +190,7 @@ control "cis_v160_2_11" {
 control "cis_v160_2_12" {
   title         = "2.12 Ensure that authorization for Docker client commands is enabled"
   description   = "We should use native Docker authorization plugins or a third party authorization mechanism with the Docker daemon to manage access to Docker client commands."
-  query         = query.authorization_docker_client_command_enabled
+  query         = query.exec_authorization_docker_client_command_enabled
   documentation = file("./cis_v160/docs/cis_v160_2_12.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -204,7 +204,7 @@ control "cis_v160_2_12" {
 control "cis_v160_2_13" {
   title         = "2.13 Ensure centralized and remote logging is configured"
   description   = "Docker supports various logging mechanisms. A preferable method for storing logs is one that supports centralized and remote management."
-  query         = query.centralized_and_remote_logging_configured
+  query         = query.docker_centralized_and_remote_logging_configured
   documentation = file("./cis_v160/docs/cis_v160_2_13.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -218,7 +218,7 @@ control "cis_v160_2_13" {
 control "cis_v160_2_14" {
   title       = "2.14 Ensure containers are restricted from acquiring new privileges"
   description = "By default you should restrict containers from acquiring additional privileges via suid or sgid."
-  query       = query.containers_no_new_privilege_disabled
+  query       = query.exec_containers_no_new_privilege_disabled
   # documentation = file("./cis_v160/docs/cis_v160_2_14.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -232,7 +232,7 @@ control "cis_v160_2_14" {
 control "cis_v160_2_15" {
   title         = "2.15 Ensure live restore is enabled"
   description   = "The --live-restore option enables full support of daemon-less containers within Docker. It ensures that Docker does not stop containers on shutdown or restore and that it properly reconnects to the container when restarted."
-  query         = query.live_restore_enabled
+  query         = query.docker_live_restore_enabled
   documentation = file("./cis_v160/docs/cis_v160_2_15.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -246,7 +246,7 @@ control "cis_v160_2_15" {
 control "cis_v160_2_16" {
   title       = "2.16 Ensure Userland Proxy is Disabled"
   description = "The Docker daemon starts a userland proxy service for port forwarding whenever a port is exposed. Where hairpin NAT is available, this service is generally superfluous to requirements and can be disabled."
-  query       = query.userland_proxy_disabled
+  query       = query.exec_userland_proxy_disabled
   # documentation = file("./cis_v160/docs/cis_v160_2_16.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -260,7 +260,7 @@ control "cis_v160_2_16" {
 control "cis_v160_2_17" {
   title         = "2.17 Ensure that a daemon-wide custom seccomp profile is applied if appropriate"
   description   = "You can choose to apply a custom seccomp profile at a daemon-wide level if needed with this overriding Docker's default seccomp profile."
-  query         = query.custom_seccomp_profile_applied
+  query         = query.docker_custom_seccomp_profile_applied
   documentation = file("./cis_v160/docs/cis_v160_2_17.md")
 
   tags = merge(local.cis_v160_2_common_tags, {

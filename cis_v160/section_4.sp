@@ -36,7 +36,7 @@ benchmark "cis_v160_4" {
 control "cis_v160_4_1" {
   title         = "4.1 Ensure that a user for the container has been created"
   description   = "Containers should run as a non-root user."
-  query         = query.docker_container_non_root_user
+  query         = query.exec_docker_container_non_root_user
   documentation = file("./cis_v160/docs/cis_v160_4_1.md")
 
   tags = merge(local.cis_v160_4_common_tags, {
@@ -50,7 +50,7 @@ control "cis_v160_4_1" {
 control "cis_v160_4_5" {
   title         = "4.5 Ensure Content trust for Docker is Enabled"
   description   = "Content trust is disabled by default and should be enabled in line with organizational security policy."
-  query         = query.docker_container_trust_enabled
+  query         = query.exec_docker_container_trust_enabled
   documentation = file("./cis_v160/docs/cis_v160_4_5.md")
 
   tags = merge(local.cis_v160_4_common_tags, {

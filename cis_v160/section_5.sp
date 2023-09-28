@@ -295,7 +295,7 @@ control "cis_v160_5_23" {
 control "cis_v160_5_24" {
   title         = "5.24 Ensure that docker exec commands are not used with the user=root option"
   description   = "You should not use docker exec with the --user=root option."
-  query         = query.docker_exec_command_no_user_root_option
+  query         = query.exec_docker_exec_command_no_user_root_option
   documentation = file("./cis_v160/docs/cis_v160_5_24.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
@@ -366,7 +366,7 @@ control "cis_v160_5_31" {
 control "cis_v160_5_32" {
   title         = "5.32 Ensure that the Docker socket is not mounted inside any containers"
   description   = "The Docker socket docker.sock should not be mounted inside a container."
-  query         = query.docker_socket_not_mounted_inside_containers
+  query         = query.exec_docker_socket_not_mounted_inside_containers
   documentation = file("./cis_v160/docs/cis_v160_5_32.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
