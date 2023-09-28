@@ -31,13 +31,13 @@ Docker is hosted in local macOS or Linux operating system, you can keep the defa
 
 ```
 connection "docker" {
-  plugin = "docker"
+  plugin  = "docker"
 }
 ```
 
 ```
 connection "exec" {
-  plugin      = "exec"
+  plugin  = "exec"
 }
 ```
 
@@ -95,7 +95,7 @@ connection "exec" {
 
 ### Using workspace
 
-You can leverage [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace) feature of Steampipe to control the Docker compliance execution. You choose to group respective connection info and execute benchmark or controls with [Workspace Arguments](https://steampipe.io/docs/reference/config-files/workspace#workspace-arguments). Simple example provided as below
+You can leverage [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace) feature of Steampipe to control the Docker compliance execution. You choose to group respective connection info and execute benchmark or controls with [Workspace Arguments](https://steampipe.io/docs/reference/config-files/workspace#workspace-arguments). Simple example `workspace.spc` provided as below
 
 ```
 ## Docker Compliance
@@ -112,7 +112,7 @@ workspace "docker_cis_remote" {
 }
 ```
 
-**Executing with --workspace argument**
+**Executing with --workspace**
 
 Run all benchmarks:
 
