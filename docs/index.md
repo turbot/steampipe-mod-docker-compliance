@@ -27,7 +27,7 @@ Run individual configuration, compliance and security controls or full complianc
 
 ### Local configuration
 
-When docker is hosted in local macOS or Linux operating system
+Docker is hosted in local macOS or Linux operating system, you can keep the default configuration in respective config files.
 
 ```
 connection "docker" {
@@ -41,10 +41,12 @@ connection "exec" {
 }
 ```
 
-### Remote configuration
+### Remote configuration with encryption
 
-When docker is hosted in remote operating system
+Docker is hosted in remote operating system e.g. Linux, and user is initiating connection from local macOS
+More [info](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket) to protect the Docker daemon
 
+`docker.spc`
 ```
 connection "docker" {
   plugin = "docker"
@@ -54,7 +56,33 @@ connection "docker" {
   tls_verify  = true
 }
 ```
-***api_version** is the Docker API version used on the remote server. You can check this by `docker version` command*
+**Note:**
+Docker over TLS should run on TCP port 2376.
+*api_version* is the Docker API version used on the remote server. You can check this by `docker version` command*
+
+`exec.spc`
+```
+connection "exec" {
+  plugin      = "exec"
+  host        = "12.345.67.890"
+  user        = "ec2-user"
+  protocol    = "ssh"
+  private_key = "<path to the server private key.pem file>"
+}
+```
+
+### Remote configuration without encryption
+
+`docker.spc`
+```
+connection "docker" {
+  plugin = "docker"
+  host        = "tcp://12.345.67.890:2375"
+}
+```
+WARNING: If docker configured unencrypted, API is accessible on http://0.0.0.0:2375 without encryption. Access to the remote API is equivalent to root access on the host. Refe to the 'Docker daemon attack surface' section in the documentation for more [information](https://docs.docker.com/go/attack-surface/)
+
+`exec.spc`
 ```
 connection "exec" {
   plugin      = "exec"
@@ -67,15 +95,48 @@ connection "exec" {
 
 ### Using workspace
 
-// TO DO
+You can leverage [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace) feature of Steampipe to control the Docker compliance execution. You choose to group respective connection info and execute benchmark or controls with [Workspace Arguments](https://steampipe.io/docs/reference/config-files/workspace#workspace-arguments). Simple example provided as below
 
-### Multiple connection
+```
+## Docker Compliance
+# The following connection must be available in respective config files i.e. docker.spc & exec.spc
 
-// TO DO
+# Running Docker compliance in local OS
+workspace "docker_cis_local" {
+  search_path_prefix = "exec_local,docker_local"
+}
+
+# Running Docker compliance in local OS with remote connection
+workspace "docker_cis_remote" {
+  search_path_prefix = "exec_remote,docker_remote"
+}
+```
+
+**Executing with --workspace argument**
+
+Run all benchmarks:
+
+```sh
+steampipe check all --workspace docker_cis_remote
+```
+
+Run a single benchmark:
+
+```sh
+steampipe check benchmark.cis_v160_5 --workspace docker_cis_remote
+```
+
+Run a specific control:
+
+```sh
+steampipe check control.cis_v160_5_1 --workspace docker_cis_remote
+```
 
 ### Variables
 
-// TO DO
+ Docker compliance is not limited to validating its core components such as container, image, network, etc.; it also validates its installed & used filesystem with permissions & ownerships. Steampipe provides integration of the `Exec` plugin to evaluate such controls.
+
+Steampipe provides a variable feature in `mod.sp` to allow the user to change the value for any specific plugin use. You can update the value to only docker if you want to execute only Docker-related controls. The default value is set to both.
 
 ```
 variable "control_types" {
