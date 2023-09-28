@@ -5,20 +5,9 @@ locals {
 }
 
 locals {
-  cis_v160_4_docker_controls = [
-    control.cis_v160_4_6
-  ]
-
-  cis_v160_4_exec_controls = [
-    control.cis_v160_4_1,
-    control.cis_v160_4_5
-  ]
-}
-
-locals {
   cis_v160_4_controls = concat(
-    contains(var.control_types, "docker") ? local.cis_v160_4_docker_controls : [],
-    contains(var.control_types, "exec") ? local.cis_v160_4_exec_controls : [],
+    contains(var.control_types, "exec") ? [control.cis_v160_4_1, control.cis_v160_4_5] : [],
+    contains(var.control_types, "docker") ? [control.cis_v160_4_6] : [],
   )
 }
 

@@ -4,9 +4,8 @@ locals {
   })
 }
 
+# Local for convenience due to the number of items in this group
 locals {
-  cis_v160_3_docker_controls = []
-
   cis_v160_3_exec_controls = [
     control.cis_v160_3_1,
     control.cis_v160_3_2,
@@ -37,7 +36,6 @@ locals {
 
 locals {
   cis_v160_3_controls = concat(
-    contains(var.control_types, "docker") ? local.cis_v160_3_docker_controls : [],
     contains(var.control_types, "exec") ? local.cis_v160_3_exec_controls : [],
   )
 }
