@@ -711,7 +711,7 @@ query "exec_permissions_444_tls_ca_certificate" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%444%' then host || ' TLS CA certificate file permissions are set to 444.'
-        else host || ' TLS CA certificate file permissions are set to ' || o.stdout_output || '.'
+        else host || ' TLS CA certificate file permissions are set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -762,7 +762,7 @@ query "exec_permissions_444_docker_server_certificate" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%444%' then host || ' server certificate file permissions are set to 444.'
-        else host || ' server certificate file permissions are set to ' || o.stdout_output || '.'
+        else host || ' server certificate file permissions are set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -813,7 +813,7 @@ query "exec_permissions_400_docker_server_certificate_key" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%400%' then host || ' server certificate key file permissions are set to 400.'
-        else host || ' server certificate key file permissions are set to ' || o.stdout_output || '.'
+        else host || ' server certificate key file permissions are set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -851,7 +851,7 @@ query "exec_permissions_444_registry_certificate" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/certs.d does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
-        else host || ' registry certificate file permissions set to ' || o.stdout_output || '.'
+        else host || ' registry certificate file permissions set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -1067,7 +1067,7 @@ query "exec_permissions_755_etc_docker" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker does not exist on ' || os.os || ' OS.'
         when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
-        else host || ' /etc/docker directory permission set to ' || o.stdout_output || '.'
+        else host || ' /etc/docker directory permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
