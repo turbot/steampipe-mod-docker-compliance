@@ -1,0 +1,5 @@
+# Dimensions
+common_dimensions = ["connection""]
+
+# Set which types of controls will be run
+control_types = ["docker", "exec"]
