@@ -832,6 +832,7 @@ query "exec_permissions_444_registry_certificate" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -844,13 +845,13 @@ query "exec_permissions_444_registry_certificate" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%444%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/certs.d does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' registry certificate file permissions set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -870,6 +871,7 @@ query "exec_permissions_600_docker_containerd_socket" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -882,13 +884,13 @@ query "exec_permissions_600_docker_containerd_socket" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%660%' or o.stdout_output like '%600%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /run/containerd/containerd.sock does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' containerd socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
         end as reason
         ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -908,6 +910,7 @@ query "exec_permissions_644_etc_sysconfig_docker" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -920,13 +923,13 @@ query "exec_permissions_644_etc_sysconfig_docker" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%644%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/sysconfig/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' containerd socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1048,6 +1051,7 @@ query "exec_permissions_755_etc_docker" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -1060,13 +1064,13 @@ query "exec_permissions_755_etc_docker" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%755%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' /etc/docker directory permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1086,6 +1090,7 @@ query "exec_permissions_660_docker_sock" {
      linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -1098,6 +1103,7 @@ query "exec_permissions_660_docker_sock" {
     darwin_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -1115,12 +1121,12 @@ query "exec_permissions_660_docker_sock" {
     select
       host as resource,
       case
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%660%' then 'ok'
         else 'alarm'
       end as status,
       case
-        when o.stdout_output like host || '%No such file or directory%' then ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like host || '%No such file or directory%' then ' recommendation is not applicable as the file is unavailable.'
         else host || ' docker.socket file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1140,6 +1146,7 @@ query "exec_permissions_644_daemon_json" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -1152,13 +1159,13 @@ query "exec_permissions_644_daemon_json" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%644%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' daemon.json file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1177,6 +1184,7 @@ query "exec_permissions_644_etc_default_docker" {
     ${local.os_hostname_sql}
     linux_output as (
       select
+        stderr_output,
         stdout_output,
         _ctx ->> 'connection_name' as conn
       from
@@ -1190,13 +1198,13 @@ query "exec_permissions_644_etc_default_docker" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output like '%644%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/default/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         else host || ' /etc/default/docker file permission set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1637,6 +1645,7 @@ query "exec_ownership_root_root_daemon_json" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -1649,13 +1658,13 @@ query "exec_ownership_root_root_daemon_json" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output = '' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         when o.stdout_output = '' then host || ' daemon.json file ownership is set to root:root.'
         else host || ' Docker socket file ownership is not set to root:root.'
       end as reason
@@ -1676,6 +1685,7 @@ query "exec_ownership_root_root_etc_default_docker" {
     linux_output as (
       select
         stdout_output,
+        stderr_output,
         _ctx ->> 'connection_name' as conn
       from
         exec_command,
@@ -1688,13 +1698,13 @@ query "exec_ownership_root_root_etc_default_docker" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%No such file or directory%' then 'skip'
+        when o.stderr_output like '%No such file or directory%' then 'skip'
         when o.stdout_output = '' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/default/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
+        when o.stderr_output like '%No such file or directory%' then host || ' recommendation is not applicable as the file is unavailable.'
         when o.stdout_output = '' then host || ' /etc/default/docker file ownership is set to root:root.'
         else host || ' /etc/default/docker file ownership is not set to root:root.'
       end as reason
