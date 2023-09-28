@@ -55,12 +55,14 @@ mod "docker_compliance" {
     image       = "/images/mods/turbot/docker-compliance-social-graphic.png"
   }
 
+  /*
   require {
     plugin "docker" {
-      version = "0.7.0"
+      version = "0.9.0"
     }
     plugin "exec" {
-      version = "0.0.1"
+      version = "0.0.4"
     }
   }
+  */
 }
