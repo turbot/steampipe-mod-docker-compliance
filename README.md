@@ -25,10 +25,10 @@ brew tap turbot/tap
 brew install steampipe
 ```
 
-Install the Docker plugins with [Steampipe](https://steampipe.io):
+Install the Docker and Exec plugins with [Steampipe](https://steampipe.io):
 
 ```sh
-steampipe plugin install docker
+steampipe plugin install docker exec
 ```
 
 Clone:
