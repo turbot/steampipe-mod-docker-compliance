@@ -52,10 +52,10 @@ mod "docker_compliance" {
 
   require {
     plugin "docker" {
-      min_version = "0.9.0"
+      version = "0.9.0"
     }
     plugin "exec" {
-      min_version = "0.0.4"
+      version = "0.0.4"
     }
   }
 }
