@@ -44,7 +44,7 @@ mod "docker_compliance" {
   # hub metadata
   title         = "Docker Compliance"
   description   = "Run individual configuration, compliance and security controls or full compliance benchmarks for CIS controls across all your Docker resources using Steampipe."
-  color         = "#FF9900"
+  color         = "#0db7ed"
   documentation = file("./docs/index.md")
   icon          = "/images/mods/turbot/docker-compliance.svg"
   categories    = ["docker", "cis", "compliance"]
