@@ -1,6 +1,6 @@
 # Dimensions
 common_dimensions = ["connection""]
 
-# Controls using tables from these plugins will be included when running benchmarks.
-# Valid values are 'docker' and 'exec'.
+# Controls using tables from these plugins will be included when running benchmarks
+# Valid values are 'docker' and 'exec'
 benchmark_plugins = ["docker", "exec"]
