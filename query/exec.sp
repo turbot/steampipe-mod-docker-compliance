@@ -19,9 +19,7 @@ locals {
         command = 'hostname'
     ),
   EOQ
-}
 
-locals {
   hostname_sql = <<-EOQ
     with hostname as (
       select
@@ -679,7 +677,8 @@ query "exec_permissions_444_tls_ca_certificate" {
     linux_output as (
       with json_value_cte as (
         select
-          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then 'no encryption' else 'stat -c %a ' || (stdout_output::jsonb->>'tlscacert') end as key_value,
+          -- Use the colon as a "true" command that returns an empty string
+          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then ':' else 'stat -c %a ' || (stdout_output::jsonb->>'tlscacert') end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -691,7 +690,7 @@ query "exec_permissions_444_tls_ca_certificate" {
           key_value
       )
       select
-        case when a.key_value = 'no encryption' then 'no encryption' else stdout_output end as stdout_output,
+        stdout_output,
         _ctx ->> 'connection_name' as conn
       from
         json_value_cte as a
@@ -705,13 +704,13 @@ query "exec_permissions_444_tls_ca_certificate" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%no encryption%' then 'skip'
+        when o.stdout_output = '' then 'skip'
         when o.stdout_output like '%444%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%no encryption%' then host || ' TLS CA certificate file does not exist.'
+        when o.stdout_output = '' then host || ' TLS CA certificate file does not exist.'
         when o.stdout_output like '%444%' then host || ' TLS CA certificate file permissions are set to 444.'
         else host || ' TLS CA certificate file permissions are set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
@@ -732,7 +731,8 @@ query "exec_permissions_444_docker_server_certificate" {
     linux_output as (
       with json_value_cte as (
         select
-          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then 'no encryption'  else 'stat -c %a ' || (stdout_output::jsonb->>'tlscert') end as key_value,
+          -- Use the colon as a "true" command that returns an empty string
+          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then ':'  else 'stat -c %a ' || (stdout_output::jsonb->>'tlscert') end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -744,7 +744,7 @@ query "exec_permissions_444_docker_server_certificate" {
           key_value
       )
       select
-        case when a.key_value = 'no encryption' then 'no encryption' else stdout_output end as stdout_output,
+        stdout_output,
         _ctx ->> 'connection_name' as conn
       from
         json_value_cte as a
@@ -758,13 +758,13 @@ query "exec_permissions_444_docker_server_certificate" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%no encryption%' then 'skip'
+        when o.stdout_output = '' then 'skip'
         when o.stdout_output like '%444%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%no encryption%' then host || ' TLS CA certificate file does not exist.'
+        when o.stdout_output = '' then host || ' TLS CA certificate file does not exist.'
         when o.stdout_output like '%444%' then host || ' server certificate file permissions are set to 444.'
         else host || ' server certificate file permissions are set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
@@ -785,7 +785,8 @@ query "exec_permissions_400_docker_server_certificate_key" {
     linux_output as (
       with json_value_cte as (
         select
-          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then 'no encryption' else 'stat -c %a ' || (stdout_output::jsonb->>'tlskey') end as key_value,
+          -- Use the colon as a "true" command that returns an empty string
+          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then ':' else 'stat -c %a ' || (stdout_output::jsonb->>'tlskey') end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -797,7 +798,7 @@ query "exec_permissions_400_docker_server_certificate_key" {
           key_value
       )
       select
-        case when a.key_value = 'no encryption' then 'no encryption' else stdout_output end as stdout_output,
+        stdout_output,
         _ctx ->> 'connection_name' as conn
       from
         json_value_cte as a
@@ -811,13 +812,13 @@ query "exec_permissions_400_docker_server_certificate_key" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%no encryption%' then 'skip'
+        when o.stdout_output = '' then 'skip'
         when o.stdout_output like '%400%' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%no encryption%' then host || ' TLS CA certificate file does not exist.'
+        when o.stdout_output = '' then host || ' TLS CA certificate file does not exist.'
         when o.stdout_output like '%400%' then host || ' server certificate key file permissions are set to 400.'
         else host || ' server certificate key file permissions are set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
@@ -1252,7 +1253,7 @@ query "exec_ownership_root_root_docker_socket" {
     select
       host as resource,
       case
-         when os.os ilike '%Darwin%' then 'skip'
+        when os.os ilike '%Darwin%' then 'skip'
         when l.stdout_output = '' then 'skip'
         when o.stdout_output = '' then 'ok'
         else 'alarm'
@@ -1367,7 +1368,7 @@ query "exec_ownership_root_root_etc_sysconfig_docker" {
     select
       host as resource,
       case
-         when os.os ilike '%Darwin%' then 'skip'
+        when os.os ilike '%Darwin%' then 'skip'
         when o.stdout_output = '' then 'ok'
         else 'alarm'
       end as status,
@@ -1445,7 +1446,8 @@ query "exec_ownership_root_root_tls_ca_certificate" {
     linux_output as (
       with json_value_cte as (
         select
-          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then 'no encryption' else 'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscacert') || ' | grep -v root:root' end as key_value,
+          -- Use the colon as a "true" command that returns an empty string
+          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then ':' else 'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscacert') || ' | grep root:root' end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1457,9 +1459,7 @@ query "exec_ownership_root_root_tls_ca_certificate" {
           key_value
       )
       select
-        case
-          when a.key_value = 'no encryption' then 'no encryption' else stdout_output
-        end as stdout_output,
+        stdout_output,
         _ctx ->> 'connection_name' as conn
       from
         json_value_cte as a
@@ -1473,14 +1473,14 @@ query "exec_ownership_root_root_tls_ca_certificate" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%no encryption%' then 'skip'
-        when o.stdout_output like '' then 'ok'
+        when o.stdout_output = '' then 'skip'
+        when btrim(o.stdout_output, E'\r\n\t') = 'root:root' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%no encryption%' then host || ' TLS CA certificate file does not exist.'
-        when o.stdout_output like '' then host || ' TLS CA certificate file ownership is set to root:root.'
+        when o.stdout_output = '' then host || ' TLS CA certificate file does not exist.'
+        when btrim(o.stdout_output, E'\r\n\t') = 'root:root' then host || ' TLS CA certificate file ownership is set to root:root.'
         else host || ' TLS CA certificate file ownership is set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1500,7 +1500,8 @@ query "exec_ownership_root_root_docker_server_certificate" {
     linux_output as (
       with json_value_cte as (
         select
-          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then 'no encryption' else 'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscert') || ' | grep -v root:root' end as key_value,
+          -- Use the colon as a "true" command that returns an empty string
+          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then ':' else 'stat -c %U:%G ' || (stdout_output::jsonb->>'tlscert') || ' | grep -v root:root' end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1512,7 +1513,7 @@ query "exec_ownership_root_root_docker_server_certificate" {
           key_value
       )
       select
-        case when a.key_value = 'no encryption' then 'no encryption' else stdout_output end as stdout_output,
+        stdout_output,
         _ctx ->> 'connection_name' as conn
       from
         json_value_cte as a
@@ -1526,14 +1527,14 @@ query "exec_ownership_root_root_docker_server_certificate" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%no encryption%' then 'skip'
-        when o.stdout_output like '' then 'ok'
+        when o.stdout_output = '' then 'skip'
+        when btrim(o.stdout_output, E'\r\n\t') = 'root:root' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%no encryption%' then host || ' TLS CA certificate file does not exist.'
-        when o.stdout_output like '' then host || ' server certificate file ownership is set to root:root.'
+        when o.stdout_output = '' then host || ' TLS CA certificate file does not exist.'
+        when btrim(o.stdout_output, E'\r\n\t') = 'root:root' then host || ' server certificate file ownership is set to root:root.'
         else host || ' server certificate file ownership is set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1553,7 +1554,8 @@ query "exec_ownership_root_root_docker_server_certificate_key" {
     linux_output as (
       with json_value_cte as (
         select
-          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then 'no encryption' else  'stat -c %U:%G ' || (stdout_output::jsonb->>'tlskey') || ' | grep -v root:root' end as key_value,
+          -- Use the colon as a "true" command that returns an empty string
+          case when stdout_output = '' or (stdout_output::jsonb->>'tlscacert') is null then ':' else  'stat -c %U:%G ' || (stdout_output::jsonb->>'tlskey') || ' | grep root:root' end as key_value,
           _ctx ->> 'connection_name' as os_conn
         from
           exec_command,
@@ -1565,7 +1567,7 @@ query "exec_ownership_root_root_docker_server_certificate_key" {
           key_value
       )
       select
-        case when a.key_value = 'no encryption' then 'no encryption' else stdout_output end as stdout_output,
+        stdout_output,
         _ctx ->> 'connection_name' as conn
       from
         json_value_cte as a
@@ -1579,14 +1581,14 @@ query "exec_ownership_root_root_docker_server_certificate_key" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '%no encryption%' then 'skip'
-        when o.stdout_output like '' then 'ok'
+        when o.stdout_output = '' then 'skip'
+        when btrim(o.stdout_output, E'\r\n\t') = 'root:root' then 'ok'
         else 'alarm'
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker/daemon.json does not exist on ' || os.os || ' OS.'
-        when o.stdout_output like '%no encryption%' then host || ' TLS CA certificate file does not exist.'
-        when o.stdout_output like '' then host || ' server certificate key file ownership is set to root:root.'
+        when o.stdout_output = '' then host || ' TLS CA certificate file does not exist.'
+        when btrim(o.stdout_output, E'\r\n\t') = 'root:root' then host || ' server certificate key file ownership is set to root:root.'
         else host || ' server certificate key file ownership is set to ' || (btrim(o.stdout_output, E' \n\r\t')) || '.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1788,12 +1790,12 @@ query "exec_docker_exec_command_no_privilege_option" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '' then 'ok'
+        when o.stdout_output = '' then 'ok'
         else 'alarm'
       end as status,
       case
-        when os.os ilike '%Darwin%' then host || ' ausearch command does not support on ' || os.os || ' OS.'
-        when o.stdout_output like '' then host || ' Docker exec commands are not used with the privileged option.'
+        when os.os ilike '%Darwin%' then host || ' ausearch command not supported on ' || os.os || ' OS.'
+        when o.stdout_output = '' then host || ' Docker exec commands are not used with the privileged option.'
         else host || ' Docker exec commands are used with the privileged option.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
@@ -1825,12 +1827,12 @@ query "exec_docker_exec_command_no_user_root_option" {
       host as resource,
       case
         when os.os ilike '%Darwin%' then 'skip'
-        when o.stdout_output like '' then 'ok'
+        when o.stdout_output = '' then 'ok'
         else 'alarm'
       end as status,
       case
-        when os.os ilike '%Darwin%' then host || ' ausearch command does not support on ' || os.os || ' OS.'
-        when o.stdout_output like '' then host || ' Docker exec commands are not used with the user=root option'
+        when os.os ilike '%Darwin%' then host || ' ausearch command not supported on ' || os.os || ' OS.'
+        when o.stdout_output = '' then host || ' Docker exec commands are not used with the user=root option.'
         else host || ' Docker exec commands are used with the user=root option.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
