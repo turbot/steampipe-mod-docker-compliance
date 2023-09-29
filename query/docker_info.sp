@@ -1,4 +1,4 @@
-query "docker_swarm_mode_enabled" {
+query "docker_info_swarm_mode_enabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -7,8 +7,8 @@ query "docker_swarm_mode_enabled" {
         else 'alarm'
       end as status,
       case
-        when swarm ->> 'LocalNodeState' = 'inactive' then name || ' swarm mode is disabled.'
-        else name || ' swarm mode is enabled.'
+        when swarm ->> 'LocalNodeState' = 'inactive' then name || ' swarm mode disabled.'
+        else name || ' swarm mode enabled.'
       end as reason
       ${local.common_dimensions_sql}
     from
@@ -16,7 +16,7 @@ query "docker_swarm_mode_enabled" {
   EOQ
 }
 
-query "docker_container_sprawl_avoided" {
+query "docker_info_container_sprawl_avoided" {
   sql = <<-EOQ
     select
       id as resource,
@@ -34,7 +34,7 @@ query "docker_container_sprawl_avoided" {
   EOQ
 }
 
-query "docker_swarm_minimum_required_manager_nodes" {
+query "docker_info_swarm_minimum_required_manager_nodes" {
   sql = <<-EOQ
     select
       id as resource,
@@ -52,7 +52,7 @@ query "docker_swarm_minimum_required_manager_nodes" {
   EOQ
 }
 
-query "docker_swarm_manager_auto_lock_mode" {
+query "docker_info_swarm_manager_auto_lock_mode" {
   sql = <<-EOQ
     select
       id as resource,
@@ -61,8 +61,8 @@ query "docker_swarm_manager_auto_lock_mode" {
         else 'alarm'
       end as status,
       case
-        when swarm -> 'Cluster' -> 'Spec' -> 'EncryptionConfig' ->> 'AutoLockManagers' = 'true' then name || ' swarm manager is run in auto-lock mode.'
-        else name || ' swarm manager is not run in auto-lock mode.'
+        when swarm -> 'Cluster' -> 'Spec' -> 'EncryptionConfig' ->> 'AutoLockManagers' = 'true' then name || ' swarm manager run in auto-lock mode.'
+        else name || ' swarm manager not run in auto-lock mode.'
       end as reason
       ${local.common_dimensions_sql}
     from
@@ -70,7 +70,7 @@ query "docker_swarm_manager_auto_lock_mode" {
   EOQ
 }
 
-query "docker_swarm_node_cert_expiry_set" {
+query "docker_info_swarm_node_cert_expiry_set" {
   sql = <<-EOQ
     select
       id as resource,
@@ -79,8 +79,8 @@ query "docker_swarm_node_cert_expiry_set" {
         else 'ok'
       end as status,
       case
-        when swarm -> 'Cluster' -> 'Spec' -> 'CaConfig' ->> 'NodeCertExpiry' is null then name || ' node cert expiry is not set.'
-        else name || ' node cert expiry is set.'
+        when swarm -> 'Cluster' -> 'Spec' -> 'CaConfig' ->> 'NodeCertExpiry' is null then name || ' node cert expiry not set.'
+        else name || ' node cert expiry set.'
       end as reason
       ${local.common_dimensions_sql}
     from
@@ -88,7 +88,7 @@ query "docker_swarm_node_cert_expiry_set" {
   EOQ
 }
 
-query "docker_aufs_storage_driver_unused" {
+query "docker_info_aufs_storage_driver_unused" {
   sql = <<-EOQ
     select
       id as resource,
@@ -97,7 +97,7 @@ query "docker_aufs_storage_driver_unused" {
         else 'ok'
       end as status,
       case
-        when driver = 'aufs' then name || ' aufs storage driver is in use.'
+        when driver = 'aufs' then name || ' aufs storage driver in use.'
         else name || ' aufs storage driver not in use.'
       end as reason
       ${local.common_dimensions_sql}
@@ -106,7 +106,7 @@ query "docker_aufs_storage_driver_unused" {
   EOQ
 }
 
-query "docker_insecure_registries_unused" {
+query "docker_info_insecure_registries_unused" {
   sql = <<-EOQ
     select
       id as resource,
@@ -126,7 +126,7 @@ query "docker_insecure_registries_unused" {
   EOQ
 }
 
-query "docker_user_namespace_support_enabled" {
+query "docker_info_user_namespace_support_enabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -143,8 +143,8 @@ query "docker_user_namespace_support_enabled" {
            select 1
            from jsonb_array_elements(security_options) AS elem
            where elem @> '"name=userns"'
-         ) then name || ' user namespace support is enabled.'
-        else name || ' user namespace support is disabled.'
+         ) then name || ' user namespace support enabled.'
+        else name || ' user namespace support disabled.'
       end as reason
       ${local.common_dimensions_sql}
     from
@@ -152,7 +152,7 @@ query "docker_user_namespace_support_enabled" {
   EOQ
 }
 
-query "docker_centralized_and_remote_logging_configured" {
+query "docker_info_centralized_and_remote_logging_configured" {
   sql = <<-EOQ
     select
       id as resource,
@@ -161,8 +161,8 @@ query "docker_centralized_and_remote_logging_configured" {
         else 'ok'
       end as status,
       case
-        when logging_driver is null then name || ' centralized and remote logging is not configured.'
-        else name || ' centralized and remote logging is configured.'
+        when logging_driver is null then name || ' centralized and remote logging not configured.'
+        else name || ' centralized and remote logging configured.'
       end as reason
       ${local.common_dimensions_sql}
     from
@@ -170,7 +170,7 @@ query "docker_centralized_and_remote_logging_configured" {
   EOQ
 }
 
-query "docker_live_restore_enabled" {
+query "docker_info_live_restore_enabled" {
   sql = <<-EOQ
     select
       id as resource,
@@ -179,8 +179,8 @@ query "docker_live_restore_enabled" {
         else 'alarm'
       end as status,
       case
-        when live_restore_enabled then name || ' live restore is enabled.'
-        else name || ' live restore is disabled.'
+        when live_restore_enabled then name || ' live restore enabled.'
+        else name || ' live restore disabled.'
       end as reason
       ${local.common_dimensions_sql}
     from
@@ -188,7 +188,7 @@ query "docker_live_restore_enabled" {
   EOQ
 }
 
-query "docker_custom_seccomp_profile_applied" {
+query "docker_info_custom_seccomp_profile_applied" {
   sql = <<-EOQ
     select
       id as resource,
@@ -205,8 +205,8 @@ query "docker_custom_seccomp_profile_applied" {
            select 1
            from jsonb_array_elements(security_options) AS elem
            where elem @> '"name=seccomp,profile=default"'
-         ) then name || ' default seccomp profile is applied.'
-        else name || ' custom seccomp profile is applied.'
+         ) then name || ' default seccomp profile applied.'
+        else name || ' custom seccomp profile applied.'
       end as reason
       ${local.common_dimensions_sql}
     from

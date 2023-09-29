@@ -50,7 +50,7 @@ benchmark "cis_v160_5" {
 control "cis_v160_5_1" {
   title         = "5.1 Ensure swarm mode is not Enabled, if not needed"
   description   = "Do not enable swarm mode on a Docker engine instance unless this is needed."
-  query         = query.docker_swarm_mode_enabled
+  query         = query.docker_info_swarm_mode_enabled
   documentation = file("./cis_v160/docs/cis_v160_5_1.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
@@ -78,7 +78,7 @@ control "cis_v160_5_2" {
 control "cis_v160_5_5" {
   title         = "5.5 Ensure that privileged containers are not used"
   description   = "Using the --privileged flag provides all Linux kernel capabilities to the container to which it is applied and therefore overwrites the --cap-add and --cap-drop flags. For this reason we should ensure that it is not used."
-  query         = query.docker_privileged_containers
+  query         = query.docker_container_privileged
   documentation = file("./cis_v160/docs/cis_v160_5_5.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
@@ -92,7 +92,7 @@ control "cis_v160_5_5" {
 control "cis_v160_5_6" {
   title         = "5.6 Ensure sensitive host system directories are not mounted on containers"
   description   = "We should not allow sensitive host system directories such as /, /boot, /dev, /etc, /lib, /proc,  sys, /usr to be mounted as container volumes, especially in read-write mode."
-  query         = query.docker_host_system_directories_mounted_on_containers
+  query         = query.docker_container_host_system_directories_mounted
   documentation = file("./cis_v160/docs/cis_v160_5_6.md")
 
   tags = merge(local.cis_v160_5_common_tags, {
@@ -204,7 +204,7 @@ control "cis_v160_5_17" {
 control "cis_v160_5_18" {
   title         = "5.18 Ensure that host devices are not directly exposed to containers"
   description   = "Host devices can be directly exposed to containers at runtime. Do not directly expose host devices to containers, especially to containers that are not trusted."
-  query         = query.docker_host_devices_exposed_to_containers
+  query         = query.docker_container_host_devices_exposed
   documentation = file("./cis_v160/docs/cis_v160_5_18.md")
 
   tags = merge(local.cis_v160_5_common_tags, {

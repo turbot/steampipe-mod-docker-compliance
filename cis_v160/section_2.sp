@@ -91,7 +91,7 @@ control "cis_v160_2_4" {
 control "cis_v160_2_5" {
   title         = "2.5 Ensure insecure registries are not used"
   description   = "Docker considers a private registry either secure or insecure. By default, registries are considered secure."
-  query         = query.docker_insecure_registries_unused
+  query         = query.docker_info_insecure_registries_unused
   documentation = file("./cis_v160/docs/cis_v160_2_5.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -105,7 +105,7 @@ control "cis_v160_2_5" {
 control "cis_v160_2_6" {
   title         = "2.6 Ensure aufs storage driver is not used"
   description   = "Do not use aufs as the storage driver for your Docker instance."
-  query         = query.docker_aufs_storage_driver_unused
+  query         = query.docker_info_aufs_storage_driver_unused
   documentation = file("./cis_v160/docs/cis_v160_2_6.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -147,7 +147,7 @@ control "cis_v160_2_8" {
 control "cis_v160_2_9" {
   title         = "2.9 Enable user namespace support"
   description   = "We should enable user namespace support in Docker daemon to utilize container user to host user re-mapping. This recommendation is beneficial where the containers you are using do not have an explicit container user defined in the container image. If the container images that you are using have a pre-defined non-root user, this recommendation may be skipped as this feature is still in its infancy, and might result in unpredictable issues or difficulty in configuration."
-  query         = query.docker_user_namespace_support_enabled
+  query         = query.docker_info_user_namespace_support_enabled
   documentation = file("./cis_v160/docs/cis_v160_2_9.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -189,7 +189,7 @@ control "cis_v160_2_12" {
 control "cis_v160_2_13" {
   title         = "2.13 Ensure centralized and remote logging is configured"
   description   = "Docker supports various logging mechanisms. A preferable method for storing logs is one that supports centralized and remote management."
-  query         = query.docker_centralized_and_remote_logging_configured
+  query         = query.docker_info_centralized_and_remote_logging_configured
   documentation = file("./cis_v160/docs/cis_v160_2_13.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -217,7 +217,7 @@ control "cis_v160_2_14" {
 control "cis_v160_2_15" {
   title         = "2.15 Ensure live restore is enabled"
   description   = "The --live-restore option enables full support of daemon-less containers within Docker. It ensures that Docker does not stop containers on shutdown or restore and that it properly reconnects to the container when restarted."
-  query         = query.docker_live_restore_enabled
+  query         = query.docker_info_live_restore_enabled
   documentation = file("./cis_v160/docs/cis_v160_2_15.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
@@ -245,7 +245,7 @@ control "cis_v160_2_16" {
 control "cis_v160_2_17" {
   title         = "2.17 Ensure that a daemon-wide custom seccomp profile is applied if appropriate"
   description   = "You can choose to apply a custom seccomp profile at a daemon-wide level if needed with this overriding Docker's default seccomp profile."
-  query         = query.docker_custom_seccomp_profile_applied
+  query         = query.docker_info_custom_seccomp_profile_applied
   documentation = file("./cis_v160/docs/cis_v160_2_17.md")
 
   tags = merge(local.cis_v160_2_common_tags, {
