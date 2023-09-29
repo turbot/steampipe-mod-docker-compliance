@@ -7,12 +7,10 @@ locals {
   }
 }
 
-variable "control_types" {
+variable "benchmark_plugins" {
   type        = list(string)
-  description = "Set of two values used to initiate the execution of compliance controls using only specific plugin or both"
-  # A list of plugin names to include as execution mode for macOS or Linux based OS
-  # Default setting is using both docker & exec
-  default = ["docker", "exec"]
+  description = "Controls using tables from these plugins will be included when running benchmarks. Valid values are 'docker' and 'exec'."
+  default     = ["docker", "exec"]
 }
 
 variable "common_dimensions" {
@@ -24,7 +22,6 @@ variable "common_dimensions" {
 }
 
 locals {
-
   # Local internal variable to build the SQL select clause for common
   # dimensions using a table name qualifier if required. Do not edit directly.
   common_dimensions_qualifier_sql = <<-EOQ
@@ -33,11 +30,9 @@ locals {
 }
 
 locals {
-
   # Local internal variable with the full SQL select clause for common
   # dimensions. Do not edit directly.
   common_dimensions_sql = replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "")
-
 }
 
 mod "docker_compliance" {

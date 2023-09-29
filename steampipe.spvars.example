@@ -1,5 +1,6 @@
 # Dimensions
 common_dimensions = ["connection""]
 
-# Set which types of controls will be run
-control_types = ["docker", "exec"]
+# Controls using tables from these plugins will be included when running benchmarks.
+# Valid values are 'docker' and 'exec'.
+benchmark_plugins = ["docker", "exec"]

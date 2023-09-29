@@ -6,7 +6,7 @@ locals {
 
 locals {
   cis_v160_6_controls = concat(
-    contains(var.control_types, "docker") ? [control.cis_v160_6_2] : []
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_6_2] : []
   )
 }
 

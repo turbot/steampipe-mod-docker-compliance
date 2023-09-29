@@ -23,139 +23,7 @@ Run individual configuration, compliance and security controls or full complianc
 - **[Benchmarks and controls →](https://hub.steampipe.io/mods/turbot/docker_compliance/controls)**
 - **[Named queries →](https://hub.steampipe.io/mods/turbot/docker_compliance/queries)**
 
-## Docker & Exec configuration
-
-### Local configuration
-
-Docker is hosted in local macOS or Linux operating system, you can keep the default configuration in respective config files.
-
-```
-connection "docker" {
-  plugin  = "docker"
-}
-```
-
-```
-connection "exec" {
-  plugin  = "exec"
-}
-```
-
-### Remote configuration with encryption
-
-Docker is hosted in remote operating system e.g. Linux, and user is initiating connection from local macOS
-More [info](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket) to protect the Docker daemon
-
-`docker.spc`
-```
-connection "docker" {
-  plugin = "docker"
-  host        = "tcp://12.345.67.890:2376"
-  cert_path   = "<path to the cert and key files>"
-  api_version = "1.41"
-  tls_verify  = true
-}
-```
-
-**Note:**
-
-- Docker over TLS should run on TCP port 2376.
-- *api_version* is the Docker API version used on the remote server. You can check this by `docker version` command*
-
-`exec.spc`
-```
-connection "exec" {
-  plugin      = "exec"
-  host        = "12.345.67.890"
-  user        = "ec2-user"
-  protocol    = "ssh"
-  private_key = "<path to the server private key.pem file>"
-}
-```
-
-### Remote configuration without encryption
-
-`docker.spc`
-```
-connection "docker" {
-  plugin = "docker"
-  host   = "tcp://12.345.67.890:2375"
-}
-```
-WARNING: If docker configured unencrypted, API is accessible on http://0.0.0.0:2375 without encryption. Access to the remote API is equivalent to root access on the host. Refer to the `Docker daemon attack surface section` in the documentation for more [information](https://docs.docker.com/go/attack-surface/)
-
-`exec.spc`
-```
-connection "exec" {
-  plugin      = "exec"
-  host        = "12.345.67.890"
-  user        = "ec2-user"
-  protocol    = "ssh"
-  private_key = "<path to the server private key.pem file>"
-}
-```
-
-### Using workspace
-
-You can leverage [workspace](https://steampipe.io/docs/reference/config-files/workspace#workspace) feature of Steampipe to control the Docker compliance execution. You choose to group respective connection info and execute benchmark or controls with [Workspace Arguments](https://steampipe.io/docs/reference/config-files/workspace#workspace-arguments). Simple example `workspace.spc` provided as below
-
-```
-# The following connection mentioned in `search_path_prefix` must be available in respective config files i.e. docker.spc & exec.spc
-
-# Running Docker compliance in local OS
-workspace "docker_cis_local" {
-  search_path_prefix = "exec_local,docker_local"
-}
-
-# Running Docker compliance in local OS with remote connection
-workspace "docker_cis_remote" {
-  search_path_prefix = "exec_remote,docker_remote"
-}
-```
-
-**Executing using workspace**
-
-Run all benchmarks:
-
-```sh
-steampipe check all --workspace docker_cis_remote
-```
-
-Run a single benchmark:
-
-```sh
-steampipe check benchmark.cis_v160_5 --workspace docker_cis_remote
-```
-
-Run a specific control:
-
-```sh
-steampipe check control.cis_v160_5_1 --workspace docker_cis_remote
-```
-
-### Variables
-
- Docker compliance is not limited to validating its core components such as container, image, network, etc.; it also validates its installed & used filesystem with permissions & ownerships. Steampipe provides integration of the `Exec` plugin to evaluate such controls.
-
-Steampipe provides a variable feature in `mod.sp` to allow the user to change the value for any specific plugin use. You can update the value to only docker if you want to execute only Docker-related controls. The default value is set to both.
-
-```
-variable "control_types" {
-  type        = list(string)
-  description = "Set of two values used to initiate the execution of compliance controls using only specific plugin or both"
-  # A list of plugin names to include as execution mode for macOS or Linux based OS
-  # Default setting is using both docker & exec
-  default = ["docker", "exec"]
-}
-```
-
-### Operating system compatibility
-
- File paths in Docker can differ between macOS and Linux due to the underlying architecture and file system differences between the two operating systems. There are some key differences in `Filesystem & path` , `Volume mounting` , `Permissions` , `Case sensitivity` etc. Due to some of these differences, some of the controls are skipped when executed in local macOS.
-
-## Getting started
-
-### Installation
+## Installation
 
 Download and install Steampipe (https://steampipe.io/downloads). Or use Brew:
 
@@ -164,11 +32,10 @@ brew tap turbot/tap
 brew install steampipe
 ```
 
-Install the Docker & Exec plugins with [Steampipe](https://steampipe.io):
+Install the Docker and Exec plugins with [Steampipe](https://steampipe.io):
 
 ```sh
-steampipe plugin install docker
-steampipe plugin install exec
+steampipe plugin install docker exec
 ```
 
 Clone:
@@ -177,7 +44,7 @@ Clone:
 git clone https://github.com/turbot/steampipe-mod-docker-compliance.git
 ```
 
-### Usage
+## Usage
 
 Start your dashboard server to get started:
 
@@ -213,13 +80,165 @@ steampipe check control.cis_v160_5_1
 Different output formats are also available, for more information please see
 [Output Formats](https://steampipe.io/docs/reference/cli/check#output-formats).
 
-### Credentials
+## Configuration
 
-This mod uses the credentials configured in the [Steampipe Docker plugin](https://hub.steampipe.io/plugins/turbot/docker).
+This mod uses the credentials configured in the [Steampipe Docker plugin](https://hub.steampipe.io/plugins/turbot/docker) and the [Steampipe Exec plugin](https://hub.steampipe.io/plugins/turbot/exec). Please see below for examples on how to configure connections for these plugins.
 
-### Configuration
+### Local connections
 
-No extra configuration is required.
+When connecting to Docker on your local host, the Docker and Exec plugin connections require basic configuration:
+
+```hcl
+connection "docker_local" {
+  plugin  = "docker"
+}
+
+connection "exec_local" {
+  plugin  = "exec"
+}
+```
+
+### Remote connections
+
+#### Docker without TLS enabled
+
+Note: It is not recommended to allow insecure connections. Please see [Protect the Docker daemon socket](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket) for instructions on setting up TLS.
+
+You only need to specify the `host`:
+
+```hcl
+connection "docker_remote" {
+  plugin = "docker"
+  host   = "tcp://12.345.67.890:2375"
+}
+```
+
+To connect to the remote host, you need to provide additional details in the Exec plugin connection, including the private key:
+
+```hcl
+connection "exec_remote" {
+  plugin      = "exec"
+  host        = "12.345.67.890"
+  user        = "ec2-user"
+  protocol    = "ssh"
+  private_key = "/Users/myuser/keys/key.pem"
+}
+```
+
+#### Docker with TLS enabled
+
+If Docker does have TLS enabled, you will need to set `tls_verify` and provide a path to the directory containing your certificates and key files:
+
+```hcl
+connection "docker_remote_tls" {
+  plugin     = "docker"
+  host       = "tcp://12.345.67.890:2376"
+  tls_verify = true
+  cert_path  = "/Users/myuser/certs"
+}
+```
+
+The Exec plugin connection does not require any different configuration:
+
+```hcl
+connection "exec_remote" {
+  plugin      = "exec"
+  host        = "12.345.67.890"
+  user        = "ec2-user"
+  protocol    = "ssh"
+  private_key = "/Users/myuser/keys/key.pem"
+}
+```
+
+### Using workspaces with multiple connections
+
+If you have multiple local and/or remote Docker and Exec connections, you can use [Steampipe workspaces](https://steampipe.io/docs/reference/config-files/workspace) to manage your Steampipe environments. Workspaces are profiles that are usually defined in `~/.steampipe/config/workspaces.spc`.
+
+For instance, if multiple Docker and Exec plugin connections were configured:
+
+```hcl
+connection "docker_local" {
+  plugin  = "docker"
+}
+
+connection "docker_remote_tls" {
+  plugin     = "docker"
+  host       = "tcp://12.345.67.890:2376"
+  tls_verify = true
+  cert_path  = "/Users/myuser/certs"
+}
+```
+
+```hcl
+connection "exec_local" {
+  plugin  = "exec"
+}
+
+connection "exec_remote" {
+  plugin      = "exec"
+  host        = "12.345.67.890"
+  user        = "ec2-user"
+  protocol    = "ssh"
+  private_key = "/Users/myuser/keys/key.pem"
+}
+```
+
+You can create multiple workspaces in `~/.steampipe/config/workspaces.spc`:
+
+```hcl
+workspace "docker_exec_local" {
+  search_path_prefix = "docker_local,exec_local"
+}
+
+workspace "docker_exec_remote" {
+  search_path_prefix = "docker_remote_tls,exec_remote"
+}
+```
+
+To switch between workspaces, you can use the `--workspace` argument:
+
+```sh
+steampipe check benchmark.cis_v160 --workspace docker_exec_local
+steampipe check benchmark.cis_v160 --workspace docker_exec_remote
+```
+
+Additional argments can be set in each workspace, including cache TTL, mod location, and more. Please see [Workspace Arguments](https://steampipe.io/docs/reference/config-files/workspace#workspace-arguments) for a full list.
+
+## Setting control types
+
+The Docker Compliance mod queries use the Docker and Exec plugin tables in order to retrieve information about the Docker Engine and the host it runs on. If you do not have access to connect to either of those, you can set the `benchmark_plugins` variable to decide which controls are included in benchmarks.
+
+By default, both Docker and Exec queries are included:
+
+```hcl
+benchmark_plugins = ["docker", "exec"]
+```
+
+To only execute queries using Docker plugin tables, create `steampipe.spvars` with the following value:
+
+```hcl
+benchmark_plugins = ["docker"]
+```
+
+Note that controls can always be run directly, even if `benchmark_plugins` does not include the plugin type. For instance:
+
+```hcl
+steampipe check control.cis_v160_5
+```
+
+This variable can be overwritten in several ways:
+
+- Copy and rename the `steampipe.spvars.example` file to `steampipe.spvars`, and then modify the variable values inside that file
+- Pass in a value on the command line:
+
+  ```sh
+  steampipe check benchmark.cis_v160 --var 'benchmark_plugins=["docker"]'
+  ```
+- Set an environment variable:
+
+  ```sh
+  SP_VAR_benchmark_plugins='["exec"]' steampipe check benchmark.cis_v160
+  ```
 
 ## Contributing
 

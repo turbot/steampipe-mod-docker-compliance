@@ -94,8 +94,8 @@ query "exec_auditing_configured_run_containerd" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /run/containerd does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/run/containerd" auditing is not configured.'
-        else host || ' Docker files and directories "/run/containerd" auditing is configured.'
+        when o.stdout_output = '' then host || ' /run/containerd auditing is not configured.'
+        else host || ' /run/containerd auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -131,8 +131,8 @@ query "exec_auditing_configured_var_lib_docker" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /var/lib/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/var/lib/docker" auditing is not configured.'
-        else host || ' Docker files and directories "/var/lib/docker" auditing is configured.'
+        when o.stdout_output = '' then host || ' /var/lib/docker auditing is not configured.'
+        else host || ' /var/lib/docker auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -168,8 +168,8 @@ query "exec_auditing_configured_etc_docker" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/etc/docker" auditing is not configured.'
-        else host || ' Docker files and directories "/etc/docker" auditing is configured.'
+        when o.stdout_output = '' then host || ' /etc/docker auditing is not configured.'
+        else host || ' /etc/docker auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -218,8 +218,8 @@ query "exec_auditing_configured_docker_service" {
       case
         when os.os ilike '%Darwin%' then host || ' docker.service does not exist on ' || os.os || ' OS.'
         when l.stdout_output = '' then host || ' recommendation is not applicable as the file is unavailable.'
-        when o.stdout_output = '' then host || ' Docker files and directories "docker.service" auditing is not configured.'
-        else host || ' Docker files and directories "docker.service" auditing is configured.'
+        when o.stdout_output = '' then host || ' docker.service auditing is not configured.'
+        else host || ' docker.service auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -270,8 +270,8 @@ query "exec_auditing_configured_containerd_sock" {
       case
         when os.os ilike '%Darwin%' then host || ' /etc/containerd/config.toml does not exist on ' || os.os || ' OS.'
         when l.stdout_output = '' then host || ' recommendation is not applicable as the file is unavailable.'
-        when o.stdout_output = '' then host || ' Docker files and directories "containerd.sock" auditing is not configured.'
-        else host || ' Docker files and directories "containerd.sock" auditing is configured.'
+        when o.stdout_output = '' then host || ' containerd.sock auditing is not configured.'
+        else host || ' containerd.sock auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -322,8 +322,8 @@ query "exec_auditing_configured_docker_socket" {
       case
         when os.os ilike '%Darwin%' then host || ' docker.socket does not exist on ' || os.os || ' OS.'
         when l.stdout_output = '' then host || ' recommendation is not applicable as the file is unavailable.'
-        when o.stdout_output = '' then host || ' Docker files and directories "docker.socket" auditing is not configured.'
-        else host || ' Docker files and directories "docker.socket" auditing is configured.'
+        when o.stdout_output = '' then host || ' docker.socket auditing is not configured.'
+        else host || ' docker.socket auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -361,8 +361,8 @@ query "exec_auditing_configured_etc_default_docker" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/default/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/etc/default/docker" auditing is not configured.'
-        else host || ' Docker files and directories "/etc/default/docker" auditing is configured.'
+        when o.stdout_output = '' then host || ' /etc/default/docker auditing is not configured.'
+        else host || ' /etc/default/docker auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -398,8 +398,8 @@ query "exec_auditing_configured_etc_docker_daemon" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/containerd/config.toml does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/etc/docker/daemon.json" auditing is not configured.'
-        else host || ' Docker files and directories "/etc/docker/daemon.json" auditing is configured.'
+        when o.stdout_output = '' then host || ' /etc/docker/daemon.json auditing is not configured.'
+        else host || ' /etc/docker/daemon.json auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -435,8 +435,8 @@ query "exec_auditing_configured_etc_containerd_config" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/containerd/config.toml does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/etc/containerd/config.toml" auditing is not configured.'
-        else host || ' Docker files and directories "/etc/containerd/config.toml" auditing is configured.'
+        when o.stdout_output = '' then host || ' /etc/containerd/config.toml auditing is not configured.'
+        else host || ' /etc/containerd/config.toml auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -472,8 +472,8 @@ query "exec_auditing_configured_etc_sysconfig_docker" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /etc/sysconfig/docker does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/etc/sysconfig/docker" auditing is not configured.'
-        else host || ' Docker files and directories "/etc/sysconfig/docker" auditing is configured.'
+        when o.stdout_output = '' then host || ' /etc/sysconfig/docker auditing is not configured.'
+        else host || ' /etc/sysconfig/docker auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -509,8 +509,8 @@ query "exec_auditing_configured_usr_bin_containerd" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /usr/bin/containerd does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd" auditing is not configured.'
-        else host || ' Docker files and directories "/usr/bin/containerd" auditing is configured.'
+        when o.stdout_output = '' then host || ' /usr/bin/containerd auditing is not configured.'
+        else host || ' /usr/bin/containerd auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -546,8 +546,8 @@ query "exec_auditing_configured_usr_bin_containerd_shim" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /usr/bin/containerd-shim does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd-shim" auditing is not configured.'
-        else host || ' Docker files and directories "/usr/bin/containerd-shim" auditing is configured.'
+        when o.stdout_output = '' then host || ' /usr/bin/containerd-shim auditing is not configured.'
+        else host || ' /usr/bin/containerd-shim auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -583,8 +583,8 @@ query "exec_auditing_configured_usr_bin_containerd_shim_runc_v1" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /usr/bin/containerd-shim-runc-v1 does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v1" auditing is not configured.'
-        else host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v1" auditing is configured.'
+        when o.stdout_output = '' then host || ' /usr/bin/containerd-shim-runc-v1 auditing is not configured.'
+        else host || ' /usr/bin/containerd-shim-runc-v1 auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -620,8 +620,8 @@ query "exec_auditing_configured_usr_bin_containerd_shim_runc_v2" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /usr/bin/containerd-shim-runc-v2 does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v2" auditing is not configured.'
-        else host || ' Docker files and directories "/usr/bin/containerd-shim-runc-v2" auditing is configured.'
+        when o.stdout_output = '' then host || ' /usr/bin/containerd-shim-runc-v2 auditing is not configured.'
+        else host || ' /usr/bin/containerd-shim-runc-v2 auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -657,8 +657,8 @@ query "exec_auditing_configured_usr_bin_runc" {
       end as status,
       case
         when os.os ilike '%Darwin%' then host || ' /usr/bin/runc does not exist on ' || os.os || ' OS.'
-        when o.stdout_output = '' then host || ' Docker files and directories "/usr/bin/runc" auditing is not configured.'
-        else host || ' Docker files and directories "/usr/bin/runc" auditing is configured.'
+        when o.stdout_output = '' then host || ' /usr/bin/runc auditing is not configured.'
+        else host || ' /usr/bin/runc auditing is configured.'
       end as reason
       ${replace(local.common_dimensions_qualifier_sql, "__QUALIFIER__", "h.")}
     from
@@ -1299,7 +1299,7 @@ query "exec_ownership_root_root_etc_docker" {
         else 'alarm'
       end as status,
       case
-        when os.os ilike '%Darwin%' then host || ' docker.socket does not exist on ' || os.os || ' OS.'
+        when os.os ilike '%Darwin%' then host || ' /etc/docker does not exist on ' || os.os || ' OS.'
         when o.stdout_output = '' then host || ' /etc/docker directory ownership is set to root:root.'
         else host || ' /etc/docker directory ownership is not set to root:root.'
       end as reason

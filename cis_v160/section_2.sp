@@ -6,18 +6,18 @@ locals {
 
 locals {
   cis_v160_2_controls = concat(
-    contains(var.control_types, "exec") ? [control.cis_v160_2_1] : [],
-    contains(var.control_types, "docker") ? [control.cis_v160_2_2] : [],
-    contains(var.control_types, "exec") ? [control.cis_v160_2_3, control.cis_v160_2_4] : [],
-    contains(var.control_types, "docker") ? [control.cis_v160_2_5, control.cis_v160_2_6] : [],
-    contains(var.control_types, "exec") ? [control.cis_v160_2_7, control.cis_v160_2_8] : [],
-    contains(var.control_types, "docker") ? [control.cis_v160_2_9] : [],
-    contains(var.control_types, "exec") ? [control.cis_v160_2_11, control.cis_v160_2_12] : [],
-    contains(var.control_types, "docker") ? [control.cis_v160_2_13] : [],
-    contains(var.control_types, "exec") ? [control.cis_v160_2_14] : [],
-    contains(var.control_types, "docker") ? [control.cis_v160_2_15] : [],
-    contains(var.control_types, "exec") ? [control.cis_v160_2_16] : [],
-    contains(var.control_types, "docker") ? [control.cis_v160_2_17] : [],
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_2_1] : [],
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_2_2] : [],
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_2_3, control.cis_v160_2_4] : [],
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_2_5, control.cis_v160_2_6] : [],
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_2_7, control.cis_v160_2_8] : [],
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_2_9] : [],
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_2_11, control.cis_v160_2_12] : [],
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_2_13] : [],
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_2_14] : [],
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_2_15] : [],
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_2_16] : [],
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_2_17] : [],
   )
 }
 
