@@ -341,7 +341,7 @@ query "docker_container_privileged" {
       end as status,
       case
         when inspect -> 'HostConfig' ->> 'Privileged' = 'true' then (names ->> 0) || ' running as a privileged container.'
-        else (names ->> 0) || ' running as a privileged container.'
+        else (names ->> 0) || ' not running as a privileged container.'
       end as reason
       ${local.common_dimensions_sql}
     from
