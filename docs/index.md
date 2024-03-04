@@ -6,9 +6,12 @@ repository: "https://github.com/turbot/steampipe-mod-docker-compliance"
 
 Run individual configuration, compliance and security controls or full compliance benchmarks for `CIS` across all your Docker resources.
 
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_compliance_dashboard.png" width="50%" type="thumbnail"/>
+<!-- <img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_compliance_dashboard.png" width="50%" type="thumbnail"/>
 <img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_dashboard.png" width="50%" type="thumbnail"/>
-<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_console.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_console.png" width="50%" type="thumbnail"/> -->
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/add-new-checks/docs/docker_compliance_dashboard.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/add-new-checks/docs/docker_cis_v160_dashboard.png" width="50%" type="thumbnail"/>
+<img src="https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/add-new-checks/docs/docker_cis_v160_console.png" width="50%" type="thumbnail"/>
 
 ## References
 
@@ -23,7 +26,7 @@ Run individual configuration, compliance and security controls or full complianc
 - **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/docker_compliance/controls)**
 - **[Named queries →](https://hub.powerpipe.io/mods/turbot/docker_compliance/queries)**
 
-## Geting Started
+## Getting Started
 
 ### Installation
 

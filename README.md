@@ -5,19 +5,24 @@
 
 34+ checks covering industry defined security best practices for Docker. Includes full support for `CIS v1.6.0` compliance benchmarks across all your Docker resources.
 
-## Documentation
-
 **Includes full support for the CIS v1.6 Docker Benchmarks**.
 
 Run checks in a dashboard:
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_dashboard.png)
+<!-- ![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_dashboard.png) -->
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/add-new-checks/docs/docker_cis_v160_dashboard.png)
 
 Or in a terminal:
-![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_console.png)
+<!-- ![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/main/docs/docker_cis_v160_console.png) -->
+![image](https://raw.githubusercontent.com/turbot/steampipe-mod-docker-compliance/add-new-checks/docs/docker_cis_v160_console.png)
 
 Includes support for:
 
 - [Docker CIS v1.6.0](https://hub.steampipe.io/mods/turbot/docker_compliance/controls/benchmark.cis_v160)
+
+## Documentation
+
+- **[Benchmarks and controls →](https://hub.powerpipe.io/mods/turbot/docker_compliance/controls)**
+- **[Named queries →](https://hub.powerpipe.io/mods/turbot/docker_compliance/queries)**
 
 ## Getting Started
 
