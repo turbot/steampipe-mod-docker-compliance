@@ -51,7 +51,7 @@ Finally, install the mod:
 mkdir dashboards
 cd dashboards
 powerpipe mod init
-powerpipe mod install github.com/turbot/powerpipe-mod-docker-compliance
+powerpipe mod install github.com/turbot/steampipe-mod-docker-compliance
 ```
 
 ### Browsing Dashboards
