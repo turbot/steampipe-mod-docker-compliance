@@ -90,6 +90,42 @@ powerpipe benchmark run docker_compliance.benchmark.cis_v160_5
 Different output formats are also available, for more information please see
 [Output Formats](https://powerpipe.io/docs/reference/cli/benchmark#output-formats).
 
+### Configuration
+
+The Docker Compliance mod queries use the Docker and Exec plugin tables in order to retrieve information about the Docker Engine and the host it runs on. If you do not have access to connect to either of those, you can set the `benchmark_plugins` variable to decide which controls to include.
+
+By default, both Docker and Exec queries are included:
+
+```hcl
+benchmark_plugins = ["docker", "exec"]
+```
+
+To only execute queries using Docker plugin tables, create `steampipe.spvars` with the following value:
+
+```hcl
+benchmark_plugins = ["docker"]
+```
+
+Note that controls can always be run directly, even if `benchmark_plugins` does not include the plugin type. For instance:
+
+```hcl
+steampipe check control.cis_v160_5
+```
+
+This variable can be overwritten in several ways:
+
+- Copy and rename the `steampipe.spvars.example` file to `steampipe.spvars`, and then modify the variable values inside that file
+- Pass in a value on the command line:
+
+  ```sh
+  steampipe check benchmark.cis_v160 --var 'benchmark_plugins=["docker"]'
+  ```
+- Set an environment variable:
+
+  ```sh
+  SP_VAR_benchmark_plugins='["exec"]' steampipe check benchmark.cis_v160
+  ```
+
 ## Open Source & Contributing
 
 This repository is published under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0). Please see our [code of conduct](https://github.com/turbot/.github/blob/main/CODE_OF_CONDUCT.md). We look forward to collaborating with you!
