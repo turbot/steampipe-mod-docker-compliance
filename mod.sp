@@ -5,7 +5,7 @@ mod "docker_compliance" {
   color         = "#0db7ed"
   documentation = file("./docs/index.md")
   icon          = "/images/mods/turbot/docker-compliance.svg"
-  categories    = ["docker", "cis", "compliance"]
+  categories    = ["docker", "cis", "compliance", "IaC"]
 
   opengraph {
     title       = "Powerpipe Mod for Docker Compliance"
