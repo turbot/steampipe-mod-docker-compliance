@@ -1,10 +1,5 @@
 # Docker Compliance Mod for Powerpipe
 
-> [!IMPORTANT]  
-> [Powerpipe](https://powerpipe.io) is now the preferred way to run this mod! [Migrating from Steampipe →](https://powerpipe.io/blog/migrating-from-steampipe)
->
-> All v0.x versions of this mod will work in both Steampipe and Powerpipe, but v1.0.0 onwards will be in Powerpipe format only.
-
 34+ checks covering industry defined security best practices for Docker. Includes full support for `CIS v1.6.0` compliance benchmarks across all your Docker resources.
 
 **Includes full support for the CIS v1.6 Docker Benchmarks**.
@@ -221,7 +216,7 @@ By default, both Docker and Exec queries are included:
 benchmark_plugins = ["docker", "exec"]
 ```
 
-To only execute queries using Docker plugin tables, create `steampipe.spvars` with the following value:
+To only execute queries using Docker plugin tables, create `steampipe.ppvars` with the following value:
 
 ```hcl
 benchmark_plugins = ["docker"]
@@ -235,7 +230,7 @@ powerpipe control run cis_v160_5
 
 This variable can be overwritten in several ways:
 
-- Copy and rename the `steampipe.spvars.example` file to `steampipe.spvars`, and then modify the variable values inside that file
+- Copy and rename the `steampipe.ppvars.example` file to `steampipe.ppvars`, and then modify the variable values inside that file
 - Pass in a value on the command line:
 
   ```sh
