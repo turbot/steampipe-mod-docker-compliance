@@ -1,3 +1,9 @@
+## v1.0.2 [2024-10-24]
+
+_Bug fixes_
+
+- Fixed the intermittent mod loading errors while running the `powerpipe dashboard card list` command.
+
 ## v1.0.1 [2024-10-24]
 
 _Bug fixes_
