@@ -216,7 +216,7 @@ By default, both Docker and Exec queries are included:
 benchmark_plugins = ["docker", "exec"]
 ```
 
-To only execute queries using Docker plugin tables, create `steampipe.ppvars` with the following value:
+To only execute queries using Docker plugin tables, create `powerpipe.ppvars` with the following value:
 
 ```hcl
 benchmark_plugins = ["docker"]
@@ -230,7 +230,7 @@ powerpipe control run cis_v160_5
 
 This variable can be overwritten in several ways:
 
-- Copy and rename the `steampipe.ppvars.example` file to `steampipe.ppvars`, and then modify the variable values inside that file
+- Copy and rename the `powerpipe.ppvars.example` file to `powerpipe.ppvars`, and then modify the variable values inside that file
 - Pass in a value on the command line:
 
   ```sh
