@@ -29,7 +29,7 @@ locals {
 
 locals {
   cis_v160_1_1_controls = concat(
-    contains(var.benchmark_plugins, "exec") ? local.cis_v160_1_1_exec_controls : [],
+    contains(var.benchmark_plugins, "exec") ? local.cis_v160_1_1_exec_controls : list([]),
   )
 }
 

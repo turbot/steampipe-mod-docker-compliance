@@ -28,11 +28,11 @@ locals {
 
 locals {
   cis_v160_5_controls = concat(
-    contains(var.benchmark_plugins, "docker") ? local.cis_v160_5_docker_controls : [],
-    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_5_23, control.cis_v160_5_24] : [],
-    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_5_25, control.cis_v160_5_26, control.cis_v160_5_29] : [],
-    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_5_31] : [],
-    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_5_32] : [],
+    contains(var.benchmark_plugins, "docker") ? local.cis_v160_5_docker_controls : list([]),
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_5_23, control.cis_v160_5_24] : list([]),
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_5_25, control.cis_v160_5_26, control.cis_v160_5_29] : list([]),
+    contains(var.benchmark_plugins, "exec") ? [control.cis_v160_5_31] : list([]),
+    contains(var.benchmark_plugins, "docker") ? [control.cis_v160_5_32] : list([]),
   )
 }
 
