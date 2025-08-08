@@ -6,7 +6,7 @@ locals {
 }
 
 benchmark "cis_v160" {
-  title         = "CIS v1.6.0"
+  title         = "Docker CIS v1.6.0"
   description   = "The CIS Docker Benchmark provides prescriptive guidance for establishing a secure configuration posture for Docker Engine v20.10. This guide was tested against Docker Engine 20.10.20 on RHEL 7 and Ubuntu 20.04."
   documentation = file("./cis_v160/docs/cis_v160_overview.md")
   children = [
